@@ -1,7 +1,7 @@
 # Проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Андрей Грачев](https://up.htmlacademy.ru/ecmascript/13/user/252055).
-* Наставник: `Неизвестно`.
+* Наставник: `Кексобот`.
 
 ---
 
