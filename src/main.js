@@ -10,10 +10,13 @@ import {createFilmsListExtraTemplate} from './view/films-list-extra';
 import {createFilmsStatisticsTemplate} from './view/films-statistics';
 import {createFilmDetailsTemplate} from './view/film-details';
 import {FILMS_MAX_COUNT, FILMS_EXTRA_COUNT, extraListTitles} from './const';
+import {generateFilms} from './mock/films';
 
 const render = (container, template, position = `beforeend`) => {
   container.insertAdjacentHTML(position, template);
 };
+
+const films = generateFilms();
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
@@ -36,7 +39,7 @@ render(filmsListElement, createShowMoreButtonTemplate());
 const filmsListContainerElement = filmsListElement.querySelector(`.films-list__container`);
 
 for (let i = 0; i < FILMS_MAX_COUNT; i++) {
-  render(filmsListContainerElement, createFilmCardTemplate());
+  render(filmsListContainerElement, createFilmCardTemplate(films[i]));
 }
 
 for (const extraListTitle of extraListTitles) {
@@ -51,7 +54,7 @@ filmsListExtraElements.forEach((container) => {
   const filmsListContainerExtraElement = container.querySelector(`.films-list__container`);
 
   for (let i = 0; i < FILMS_EXTRA_COUNT; i++) {
-    render(filmsListContainerExtraElement, createFilmCardTemplate());
+    render(filmsListContainerExtraElement, createFilmCardTemplate(films[i]));
   }
 });
 
