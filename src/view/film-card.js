@@ -1,5 +1,4 @@
-import FormatTime from '../utils/format-time';
-import {getShortDescription} from '../utils/common';
+import {default as Utils, FormatTime} from '../utils';
 
 export const createFilmCardTemplate = (film) => {
   const {
@@ -18,7 +17,7 @@ export const createFilmCardTemplate = (film) => {
   const year = FormatTime.fullYear(date);
   const duration = FormatTime.duration(runtime);
   const genre = genres[0];
-  const filmDescription = getShortDescription(description);
+  const filmDescription = Utils.getShortDescription(description);
 
   return `
     <article class="film-card">

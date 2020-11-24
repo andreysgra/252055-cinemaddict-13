@@ -1,4 +1,5 @@
-import {getRandomItem, generateItems, setCounter} from "../utils/common";
+import {getRandomItem, setCounter} from "../utils/common";
+import Utils from '../utils';
 import * as consts from "./const";
 
 const commentId = setCounter(1000);
@@ -7,7 +8,7 @@ const generateCommentText = (sentences) => {
   const MIN_SENTENCES = 1;
   const MAX_SENTENCES = 3;
 
-  return generateItems(sentences, MIN_SENTENCES, MAX_SENTENCES).join(` `);
+  return Utils.generateItems(sentences, MIN_SENTENCES, MAX_SENTENCES).join(` `);
 };
 
 const generateComment = () => {
