@@ -1,5 +1,7 @@
 export const FILMS_COUNT = 20;
 
+export const COMMENTS_COUNT = 30;
+
 export const sentences = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -12,6 +14,13 @@ export const sentences = [
   `Aliquam erat volutpat.`,
   `Nunc fermentum tortor ac porta dapibus.`,
   `In rutrum ac purus sit amet tempus.`
+];
+
+export const emotions = [
+  `angry`,
+  `puke`,
+  `sleeping`,
+  `smile`
 ];
 
 export const filmTitles = [
