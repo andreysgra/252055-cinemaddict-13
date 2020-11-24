@@ -1,5 +1,9 @@
 import {default as Utils, FormatTime} from '../utils';
 
+const addActiveControlClass = (isActive) => {
+  return isActive ? `film-card__controls-item--active` : ``;
+};
+
 export const createFilmCardTemplate = (film) => {
   const {
     filmInfo: {
@@ -10,6 +14,11 @@ export const createFilmCardTemplate = (film) => {
       genres,
       poster,
       description,
+    },
+    userInfo: {
+      isWatchlist,
+      hasWatched,
+      isFavorite
     },
     comments
   } = film;
@@ -32,9 +41,9 @@ export const createFilmCardTemplate = (film) => {
       <p class="film-card__description">${filmDescription}</p>
       <a class="film-card__comments">${comments.length} comments</a>
       <div class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
+        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${addActiveControlClass(isWatchlist)}" type="button">Add to watchlist</button>
+        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${addActiveControlClass(hasWatched)}" type="button">Mark as watched</button>
+        <button class="film-card__controls-item button film-card__controls-item--favorite ${addActiveControlClass(isFavorite)}" type="button">Mark as favorite</button>
       </div>
     </article>
   `;
