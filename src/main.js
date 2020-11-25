@@ -11,7 +11,7 @@ import {createFilmsListExtraTemplate} from './view/films-list-extra';
 import {createFilmsStatisticsTemplate} from './view/films-statistics';
 import {createFilmDetailsTemplate} from './view/film-details';
 import {createFilmCommentsTemplate} from './view/film-comments';
-import {FILMS_MAX_COUNT, FILMS_EXTRA_COUNT, extraListTitles} from './const';
+import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, extraListTitles} from './const';
 import {generateFilms} from './mock/films';
 import {generateComments} from './mock/comments';
 import {generateFilters} from './mock/filter';
@@ -45,12 +45,33 @@ render(filmsSectionElement, createFilmsListTemplate());
 const filmsListElement = filmsSectionElement.querySelector(`.films-list`);
 
 render(filmsListElement, createFilmsListContainerTemplate());
-render(filmsListElement, createShowMoreButtonTemplate());
 
 const filmsListContainerElement = filmsListElement.querySelector(`.films-list__container`);
 
-for (let i = 0; i < FILMS_MAX_COUNT; i++) {
+for (let i = 0; i < Math.min(films.length, FILMS_COUNT_PER_STEP); i++) {
   render(filmsListContainerElement, createFilmCardTemplate(films[i]));
+}
+
+if (films.length > FILMS_COUNT_PER_STEP) {
+  let renderedFilmsCount = FILMS_COUNT_PER_STEP;
+
+  render(filmsListElement, createShowMoreButtonTemplate());
+
+  const showMoreButtonElement = filmsListElement.querySelector(`.films-list__show-more`);
+
+  showMoreButtonElement.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+
+    films
+      .slice(renderedFilmsCount, renderedFilmsCount + FILMS_COUNT_PER_STEP)
+      .forEach((film) => render(filmsListContainerElement, createFilmCardTemplate(film)));
+
+    renderedFilmsCount += FILMS_COUNT_PER_STEP;
+
+    if (renderedFilmsCount >= films.length) {
+      showMoreButtonElement.remove();
+    }
+  });
 }
 
 for (const extraListTitle of extraListTitles) {
@@ -71,7 +92,7 @@ filmsListExtraElements.forEach((container) => {
 
 const siteFooterStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
 
-render(siteFooterStatisticsElement, createFilmsStatisticsTemplate(30));
+render(siteFooterStatisticsElement, createFilmsStatisticsTemplate(films.length));
 render(document.body, createFilmDetailsTemplate(films[0]));
 
 const filmDetailsCommentsWrapElement = document.querySelector(`.film-details__comments-wrap`);
