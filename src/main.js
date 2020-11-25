@@ -61,4 +61,4 @@ filmsListExtraElements.forEach((container) => {
 const siteFooterStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
 
 render(siteFooterStatisticsElement, createFilmsStatisticsTemplate(30));
-render(document.body, createFilmDetailsTemplate());
+render(document.body, createFilmDetailsTemplate(films[0]));

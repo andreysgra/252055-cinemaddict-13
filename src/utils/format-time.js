@@ -13,6 +13,14 @@ export default class FormatTime {
     return `${hours} ${minutes}`;
   }
 
+  static fullDateMonthAsString(date) {
+    return dayjs(date).format(`DD MMMM YYYY`);
+  }
+
+  static fullDateWithTime(date) {
+    return dayjs(date).format(`YYYY/MM/DD HH:mm`);
+  }
+
   static fullYear(date) {
     return dayjs(date).format(`YYYY`);
   }

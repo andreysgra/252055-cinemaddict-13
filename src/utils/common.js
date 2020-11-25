@@ -25,7 +25,7 @@ export default class {
   }
 
   static getShortDescription(description) {
-    return description.length >= DESCRIPTION_LENGTH ? `${description.slice(0, DESCRIPTION_LENGTH - 1)} ...` : description;
+    return description.length >= DESCRIPTION_LENGTH ? `${description.slice(0, DESCRIPTION_LENGTH - 1)}...` : description;
   }
 
   static setCounter(i = 0) {

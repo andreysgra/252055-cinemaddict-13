@@ -92,7 +92,7 @@ const generateFilm = () => {
     },
     userInfo: {
       isWatchlist: Utils.getRandomBool(),
-      hasWatched: Utils.getRandomBool(),
+      isWatched: Utils.getRandomBool(),
       isFavorite: Utils.getRandomBool()
     },
     comments: generateComments()
