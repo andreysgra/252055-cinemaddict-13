@@ -9,14 +9,17 @@ import {createShowMoreButtonTemplate} from './view/show-more-button';
 import {createFilmsListExtraTemplate} from './view/films-list-extra';
 import {createFilmsStatisticsTemplate} from './view/films-statistics';
 import {createFilmDetailsTemplate} from './view/film-details';
+import {createFilmCommentsTemplate} from './view/film-comments';
 import {FILMS_MAX_COUNT, FILMS_EXTRA_COUNT, extraListTitles} from './const';
 import {generateFilms} from './mock/films';
+import {generateComments} from './mock/comments';
 
 const render = (container, template, position = `beforeend`) => {
   container.insertAdjacentHTML(position, template);
 };
 
 const films = generateFilms();
+const comments = generateComments();
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
@@ -62,3 +65,7 @@ const siteFooterStatisticsElement = siteFooterElement.querySelector(`.footer__st
 
 render(siteFooterStatisticsElement, createFilmsStatisticsTemplate(30));
 render(document.body, createFilmDetailsTemplate(films[0]));
+
+const filmDetailsCommentsWrapElement = document.querySelector(`.film-details__comments-wrap`);
+
+render(filmDetailsCommentsWrapElement, createFilmCommentsTemplate(films[0].comments, comments), `afterbegin`);
