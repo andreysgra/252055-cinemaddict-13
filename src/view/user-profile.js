@@ -1,4 +1,6 @@
-export const createUserProfileTemplate = () => {
+import Render from '../utils/render';
+
+const createUserProfileTemplate = () => {
   return `
     <section class="header__profile profile">
       <p class="profile__rating">Movie Buff</p>
@@ -6,3 +8,25 @@ export const createUserProfileTemplate = () => {
     </section>
   `;
 };
+
+export default class UserProfile {
+  constructor() {
+    this._element = null;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Render.createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  getTemplate() {
+    return createUserProfileTemplate();
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

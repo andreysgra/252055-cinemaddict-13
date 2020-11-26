@@ -12,13 +12,13 @@ export default class Render {
   static renderElement(container, element, position = RenderPosition.BEFOREEND) {
     switch (position) {
       case RenderPosition.AFTERBEGIN:
-        container.prepend(element.getElement());
+        container.prepend(element);
         break;
       case RenderPosition.BEFOREEND:
-        container.append(element.getElement());
+        container.append(element);
         break;
       case RenderPosition.AFTEREND:
-        container.parentNode.insertBefore(element.getElement(), container.nextSibling);
+        container.parentNode.insertBefore(element, container.nextSibling);
         break;
     }
   }
