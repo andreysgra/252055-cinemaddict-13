@@ -8,9 +8,9 @@ import FilmsListContainerView from './view/films-list-container';
 import FilmCardView from './view/film-card';
 import ShowMoreButtonView from './view/show-more-button';
 import FilmsListExtraView from './view/films-list-extra';
-import {createFilmsStatisticsTemplate} from './view/films-statistics';
-import {createFilmDetailsTemplate} from './view/film-details';
-import {createFilmCommentsTemplate} from './view/film-comments';
+import FilmsStatisticsView from './view/films-statistics';
+import FilmDetailsView from './view/film-details';
+import FilmCommentsView from './view/film-comments';
 import {Render} from './utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, extraListTitles, RenderPosition} from './const';
 import {generateFilms} from './mock/films';
@@ -82,9 +82,9 @@ filmsListExtraElements.forEach((container) => {
   }
 });
 
-Render.renderTemplate(footerStatisticsElement, createFilmsStatisticsTemplate(films.length));
-Render.renderTemplate(document.body, createFilmDetailsTemplate(films[0]));
+Render.renderElement(footerStatisticsElement, new FilmsStatisticsView(films.length).getElement());
+Render.renderElement(document.body, new FilmDetailsView(films[0]).getElement());
 
-const filmDetailsCommentsWrapElement = document.querySelector(`.film-details__comments-wrap`);
+const filmDetailsCommentsTitleElement = document.querySelector(`.film-details__comments-title`);
 
-Render.renderTemplate(filmDetailsCommentsWrapElement, createFilmCommentsTemplate(films[0].comments, comments), `afterbegin`);
+Render.renderElement(filmDetailsCommentsTitleElement, new FilmCommentsView(films[0].comments, comments).getElement(), RenderPosition.AFTEREND);

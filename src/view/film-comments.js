@@ -1,4 +1,4 @@
-import {FormatTime} from '../utils';
+import {Render, FormatTime} from '../utils';
 
 const createCommentsTemplate = (commentIds, comments) => {
   return commentIds
@@ -27,15 +27,36 @@ const createCommentsTemplate = (commentIds, comments) => {
     .join(``);
 };
 
-export const createFilmCommentsTemplate = (commentIds, comments) => {
+const createFilmCommentsTemplate = (commentIds, comments) => {
   const commentsList = createCommentsTemplate(commentIds, comments);
-  const commentsCount = commentIds.length;
 
   return `
-    <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
-
     <ul class="film-details__comments-list">
       ${commentsList}
     </ul>
   `;
 };
+
+export default class FilmComments {
+  constructor(commentIds, comments) {
+    this._element = null;
+    this._commentIds = commentIds;
+    this._comments = comments;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Render.createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  getTemplate() {
+    return createFilmCommentsTemplate(this._commentIds, this._comments);
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

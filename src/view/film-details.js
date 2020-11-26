@@ -1,4 +1,4 @@
-import {FormatTime} from '../utils';
+import {Render, FormatTime} from '../utils';
 
 const addCheckedProperty = (isChecked) => {
   return isChecked ? `checked` : ``;
@@ -10,7 +10,7 @@ const createGenresTemplate = (genres) => {
     .join(``);
 };
 
-export const createFilmDetailsTemplate = (film) => {
+const createFilmDetailsTemplate = (film) => {
   const {
     filmInfo: {
       title,
@@ -33,7 +33,8 @@ export const createFilmDetailsTemplate = (film) => {
       isWatchlist,
       isWatched,
       isFavorite
-    }
+    },
+    comments
   } = film;
 
   const releaseDate = FormatTime.fullDateMonthAsString(date);
@@ -45,9 +46,10 @@ export const createFilmDetailsTemplate = (film) => {
   const isFavoriteChecked = addCheckedProperty(isFavorite);
   const genreTitle = genres.length > 1 ? `Genres` : `Genre`;
   const genresList = createGenresTemplate(genres);
+  const commentsCount = comments.length;
 
   return `
-    <section class="film-details visually-hidden">
+    <section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           <div class="film-details__close">
@@ -121,6 +123,8 @@ export const createFilmDetailsTemplate = (film) => {
 
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
+
             <div class="film-details__new-comment">
               <div class="film-details__add-emoji-label"></div>
 
@@ -156,3 +160,26 @@ export const createFilmDetailsTemplate = (film) => {
     </section>
   `;
 };
+
+export default class FilmDetails {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Render.createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
