@@ -49,7 +49,7 @@ const createFilmDetailsTemplate = (film) => {
   const commentsCount = comments.length;
 
   return `
-    <section class="film-details">
+    <section class="film-details visually-hidden">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           <div class="film-details__close">

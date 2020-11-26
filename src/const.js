@@ -6,5 +6,6 @@ export const extraListTitles = [`Top rated`, `Most commented`];
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
+  BEFOREBEGIN: `beforebegin`,
   AFTEREND: `afterend`
 };

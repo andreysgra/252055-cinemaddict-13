@@ -9,7 +9,7 @@ export default class Render {
     return element.firstElementChild;
   }
 
-  static renderElement(container, element, position = RenderPosition.BEFOREEND) {
+  static render(container, element, position = RenderPosition.BEFOREEND) {
     switch (position) {
       case RenderPosition.AFTERBEGIN:
         container.prepend(element);
@@ -17,13 +17,16 @@ export default class Render {
       case RenderPosition.BEFOREEND:
         container.append(element);
         break;
+      case RenderPosition.BEFOREBEGIN:
+        container.before(element);
+        break;
       case RenderPosition.AFTEREND:
-        container.parentNode.insertBefore(element, container.nextSibling);
+        container.after(element);
         break;
     }
   }
 
-  static renderTemplate(container, template, position = `beforeend`) {
+  static renderTemplate(container, template, position = RenderPosition.BEFOREEND) {
     return container.insertAdjacentHTML(position, template);
   }
 }
