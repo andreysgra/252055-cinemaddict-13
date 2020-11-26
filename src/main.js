@@ -5,9 +5,9 @@ import SortingListView from './view/sorting-list';
 import FilmsSectionView from './view/films-section';
 import FilmsListView from './view/films-list';
 import FilmsListContainerView from './view/films-list-container';
-import {createFilmCardTemplate} from './view/film-card';
+import FilmCardView from './view/film-card';
 import ShowMoreButtonView from './view/show-more-button';
-import {createFilmsListExtraTemplate} from './view/films-list-extra';
+import FilmsListExtraView from './view/films-list-extra';
 import {createFilmsStatisticsTemplate} from './view/films-statistics';
 import {createFilmDetailsTemplate} from './view/film-details';
 import {createFilmCommentsTemplate} from './view/film-comments';
@@ -41,7 +41,7 @@ Render.renderElement(FilmsList.getElement(), new FilmsListContainerView().getEle
 const filmsListContainerElement = FilmsList.getElement().querySelector(`.films-list__container`);
 
 for (let i = 0; i < Math.min(films.length, FILMS_COUNT_PER_STEP); i++) {
-  Render.renderTemplate(filmsListContainerElement, createFilmCardTemplate(films[i]));
+  Render.renderElement(filmsListContainerElement, new FilmCardView(films[i]).getElement());
 }
 
 if (films.length > FILMS_COUNT_PER_STEP) {
@@ -56,7 +56,7 @@ if (films.length > FILMS_COUNT_PER_STEP) {
 
     films
       .slice(renderedFilmsCount, renderedFilmsCount + FILMS_COUNT_PER_STEP)
-      .forEach((film) => Render.renderTemplate(filmsListContainerElement, createFilmCardTemplate(film)));
+      .forEach((film) => Render.renderElement(filmsListContainerElement, new FilmCardView(film).getElement()));
 
     renderedFilmsCount += FILMS_COUNT_PER_STEP;
 
@@ -67,7 +67,7 @@ if (films.length > FILMS_COUNT_PER_STEP) {
 }
 
 for (const extraListTitle of extraListTitles) {
-  Render.renderTemplate(FilmsSection.getElement(), createFilmsListExtraTemplate(extraListTitle));
+  Render.renderElement(FilmsSection.getElement(), new FilmsListExtraView(extraListTitle).getElement());
 }
 
 const filmsListExtraElements = FilmsSection.getElement().querySelectorAll(`.films-list--extra`);
@@ -78,7 +78,7 @@ filmsListExtraElements.forEach((container) => {
   const filmsListContainerExtraElement = container.querySelector(`.films-list__container`);
 
   for (let i = 0; i < FILMS_EXTRA_COUNT; i++) {
-    Render.renderTemplate(filmsListContainerExtraElement, createFilmCardTemplate(films[i]));
+    Render.renderElement(filmsListContainerExtraElement, new FilmCardView(films[i]).getElement());
   }
 });
 
