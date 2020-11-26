@@ -1,6 +1,6 @@
 import UserProfileView from './view/user-profile';
 import SiteMenuView from './view/site-menu';
-import {createFilmsFilterTemplate} from './view/films-filter';
+import FilmsFilterView from './view/films-filter';
 import SortingListView from './view/sorting-list';
 import FilmsSectionView from './view/films-section';
 import FilmsListView from './view/films-list';
@@ -32,9 +32,7 @@ const FilmsList = new FilmsListView();
 
 Render.renderElement(siteHeaderElement, new UserProfileView().getElement());
 Render.renderElement(siteMainElement, siteMenu.getElement());
-
-Render.renderTemplate(siteMenu.getElement(), createFilmsFilterTemplate(filters), RenderPosition.AFTERBEGIN);
-
+Render.renderElement(siteMenu.getElement(), new FilmsFilterView(filters).getElement(), RenderPosition.AFTERBEGIN);
 Render.renderElement(siteMainElement, new SortingListView().getElement());
 Render.renderElement(siteMainElement, FilmsSection.getElement());
 Render.renderElement(FilmsSection.getElement(), FilmsList.getElement());
