@@ -1,4 +1,4 @@
-import Render from '../utils/render';
+import {Render} from '../utils';
 
 const createFilmsSectionTemplate = () => {
   return `

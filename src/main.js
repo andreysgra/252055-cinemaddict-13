@@ -11,7 +11,7 @@ import {createFilmsListExtraTemplate} from './view/films-list-extra';
 import {createFilmsStatisticsTemplate} from './view/films-statistics';
 import {createFilmDetailsTemplate} from './view/film-details';
 import {createFilmCommentsTemplate} from './view/film-comments';
-import Render from './utils/render';
+import {Render} from './utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, extraListTitles, RenderPosition} from './const';
 import {generateFilms} from './mock/films';
 import {generateComments} from './mock/comments';

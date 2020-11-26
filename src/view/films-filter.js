@@ -1,5 +1,4 @@
-import {default as Utils} from '../utils';
-import Render from '../utils/render';
+import {default as Utils, Render} from '../utils';
 
 const createFilterItemTemplate = ({name, count}, isActive) => {
   const filterName = name !== `all`
