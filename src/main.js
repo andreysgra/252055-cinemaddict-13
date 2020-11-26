@@ -1,5 +1,6 @@
 import {createUserProfileTemplate} from './view/user-profile';
-import {createSiteMenuTemplate} from './view/site-menu';
+// import {createSiteMenuTemplate} from './view/site-menu';
+import SiteMenuView from './view/site-menu';
 import {createFilmsFilterTemplate} from './view/films-filter';
 import {createSortingListTemplate} from './view/sorting-list';
 import {createFilmsSectionTemplate} from './view/films-section';
@@ -12,14 +13,10 @@ import {createFilmsStatisticsTemplate} from './view/films-statistics';
 import {createFilmDetailsTemplate} from './view/film-details';
 import {createFilmCommentsTemplate} from './view/film-comments';
 import Render from './utils/render';
-import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, extraListTitles} from './const';
+import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, extraListTitles, RenderPosition} from './const';
 import {generateFilms} from './mock/films';
 import {generateComments} from './mock/comments';
 import {generateFilters} from './mock/filter';
-
-// const render = (container, template, position = `beforeend`) => {
-//   container.insertAdjacentHTML(position, template);
-// };
 
 const films = generateFilms();
 const comments = generateComments();
@@ -30,11 +27,10 @@ const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 
 Render.renderTemplate(siteHeaderElement, createUserProfileTemplate());
-Render.renderTemplate(siteMainElement, createSiteMenuTemplate());
 
-const siteMenuElement = siteMainElement.querySelector(`.main-navigation`);
-
-Render.renderTemplate(siteMenuElement, createFilmsFilterTemplate(filters), `afterbegin`);
+const siteMenu = new SiteMenuView();
+Render.renderElement(siteMainElement, siteMenu);
+Render.renderTemplate(siteMenu.getElement(), createFilmsFilterTemplate(filters), RenderPosition.AFTERBEGIN);
 
 Render.renderTemplate(siteMainElement, createSortingListTemplate());
 Render.renderTemplate(siteMainElement, createFilmsSectionTemplate());
