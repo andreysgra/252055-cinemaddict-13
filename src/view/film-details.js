@@ -49,7 +49,7 @@ const createFilmDetailsTemplate = (film) => {
   const commentsCount = comments.length;
 
   return `
-    <section class="film-details visually-hidden">
+    <section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           <div class="film-details__close">
@@ -181,5 +181,11 @@ export default class FilmDetails {
 
   removeElement() {
     this._element = null;
+  }
+
+  setCloseButtonClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__close-btn`)
+      .addEventListener(`click`, handler);
   }
 }

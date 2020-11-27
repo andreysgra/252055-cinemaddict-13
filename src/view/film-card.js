@@ -57,6 +57,7 @@ export default class FilmCard {
   constructor(film) {
     this._element = null;
     this._film = film;
+    this._currentItem = null;
   }
 
   getElement() {
@@ -73,5 +74,20 @@ export default class FilmCard {
 
   removeElement() {
     this._element = null;
+  }
+
+  setElementsClickHandler(handler) {
+    this.getElement()
+      .addEventListener(`click`, (evt) => {
+        this._currentItem = evt.target;
+
+        if (this._currentItem.className !== `film-card__poster`
+          && this._currentItem.className !== `film-card__title`
+          && this._currentItem.className !== `film-card__comments`) {
+          return;
+        }
+
+        handler(this._film);
+      });
   }
 }
