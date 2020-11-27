@@ -1,10 +1,10 @@
-import {default as Utils, FormatTime} from '../utils';
+import {default as Utils, FormatTime, Render} from '../utils';
 
 const addActiveControlClass = (isActive) => {
   return isActive ? `film-card__controls-item--active` : ``;
 };
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {
     filmInfo: {
       title,
@@ -52,3 +52,42 @@ export const createFilmCardTemplate = (film) => {
     </article>
   `;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+    this._currentItem = null;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Render.createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  setElementsClickHandler(handler) {
+    this.getElement()
+      .addEventListener(`click`, (evt) => {
+        this._currentItem = evt.target;
+
+        if (this._currentItem.className !== `film-card__poster`
+          && this._currentItem.className !== `film-card__title`
+          && this._currentItem.className !== `film-card__comments`) {
+          return;
+        }
+
+        handler(this._film);
+      });
+  }
+}

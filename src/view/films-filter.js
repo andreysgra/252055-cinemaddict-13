@@ -1,4 +1,4 @@
-import {default as Utils} from '../utils';
+import {default as Utils, Render} from '../utils';
 
 const createFilterItemTemplate = ({name, count}, isActive) => {
   const filterName = name !== `all`
@@ -18,7 +18,7 @@ const createFilterItemTemplate = ({name, count}, isActive) => {
   `;
 };
 
-export const createFilmsFilterTemplate = (filters) => {
+const createFilmsFilterTemplate = (filters) => {
   const filterItemsTemplate = filters
     .map((filter, index) => createFilterItemTemplate(filter, index === 0))
     .join(``);
@@ -29,3 +29,26 @@ export const createFilmsFilterTemplate = (filters) => {
     </div>
   `;
 };
+
+export default class FilmsFilter {
+  constructor(filters) {
+    this._element = null;
+    this._filters = filters;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Render.createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  getTemplate() {
+    return createFilmsFilterTemplate(this._filters);
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
