@@ -1,12 +1,14 @@
 import {Render} from '../utils';
 
-const createShowMoreButtonTemplate = () => {
+const createNoFilmsTemplate = () => {
   return `
-    <button class="films-list__show-more">Show more</button>
+    <section class="films-list">
+      <h2 class="films-list__title">There are no movies in our database</h2>
+    </section>
   `;
 };
 
-export default class ShowMoreButton {
+export default class NoFilms {
   constructor() {
     this._element = null;
   }
@@ -20,15 +22,10 @@ export default class ShowMoreButton {
   }
 
   getTemplate() {
-    return createShowMoreButtonTemplate();
+    return createNoFilmsTemplate();
   }
 
   removeElement() {
     this._element = null;
-  }
-
-  setButtonClickHandler(handler) {
-    this.getElement()
-      .addEventListener(`click`, handler);
   }
 }
