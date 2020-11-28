@@ -94,7 +94,7 @@ if (films.length === 0) {
 
     Render.render(FilmsList.getElement(), ShowMoreButton.getElement());
 
-    ShowMoreButton.getElement().addEventListener(`click`, (evt) => {
+    ShowMoreButton.setButtonClickHandler((evt) => {
       evt.preventDefault();
 
       films

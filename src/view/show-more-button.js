@@ -26,4 +26,9 @@ export default class ShowMoreButton {
   removeElement() {
     this._element = null;
   }
+
+  setButtonClickHandler(handler) {
+    this.getElement()
+      .addEventListener(`click`, handler);
+  }
 }
