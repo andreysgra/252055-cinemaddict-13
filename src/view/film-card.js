@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {default as Utils, FormatTime} from '../utils';
+import {Utils, FormatTime} from '../utils';
 
 const addActiveControlClass = (isActive) => {
   return isActive ? `film-card__controls-item--active` : ``;

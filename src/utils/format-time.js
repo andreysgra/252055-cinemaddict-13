@@ -1,4 +1,4 @@
-import Utils from '../utils';
+import {Utils} from '../utils';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 

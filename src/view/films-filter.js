@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {default as Utils} from '../utils';
+import {Utils} from '../utils';
 
 const createFilterItemTemplate = ({name, count}, isActive) => {
   const filterName = name !== `all`

@@ -1,4 +1,4 @@
-import Utils from '../utils';
+import {Utils} from '../utils';
 import * as consts from "./const";
 
 const commentId = Utils.setCounter(1000);

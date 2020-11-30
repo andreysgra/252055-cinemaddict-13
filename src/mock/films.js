@@ -1,4 +1,4 @@
-import Utils from '../utils';
+import {Utils} from '../utils';
 import * as consts from "./const";
 
 const generateDescription = (sentences) => {
