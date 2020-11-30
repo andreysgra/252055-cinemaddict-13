@@ -38,8 +38,7 @@ const renderFilm = (container, film) => {
     const FilmDetails = new FilmDetailsView(filmInfo);
 
     const closeFilmDetails = () => {
-      FilmDetails.getElement().remove();
-      FilmDetails.removeElement();
+      Render.remove(FilmDetails);
       document.body.classList.remove(`hide-overflow`);
       document.removeEventListener(`keydown`, escKeyDownHandler);
     };
@@ -59,27 +58,27 @@ const renderFilm = (container, film) => {
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, escKeyDownHandler);
 
-    Render.render(document.body, FilmDetails.getElement());
+    Render.render(document.body, FilmDetails);
 
     const filmDetailsCommentsTitleElement = document.querySelector(`.film-details__comments-title`);
 
-    Render.render(filmDetailsCommentsTitleElement, new FilmCommentsView(filmInfo.comments, comments).getElement(), RenderPosition.AFTEREND);
+    Render.render(filmDetailsCommentsTitleElement, new FilmCommentsView(filmInfo.comments, comments), RenderPosition.AFTEREND);
   });
 
-  Render.render(container, FilmCard.getElement());
+  Render.render(container, FilmCard);
 };
 
-Render.render(siteMainElement, siteMenu.getElement());
-Render.render(siteMenu.getElement(), new FilmsFilterView(filters).getElement(), RenderPosition.AFTERBEGIN);
-Render.render(siteMainElement, new SortingListView().getElement());
-Render.render(siteMainElement, FilmsSection.getElement());
+Render.render(siteMainElement, siteMenu);
+Render.render(siteMenu, new FilmsFilterView(filters), RenderPosition.AFTERBEGIN);
+Render.render(siteMainElement, new SortingListView());
+Render.render(siteMainElement, FilmsSection);
 
 if (films.length === 0) {
-  Render.render(FilmsSection.getElement(), new NoFilms().getElement());
+  Render.render(FilmsSection, new NoFilms());
 } else {
-  Render.render(siteHeaderElement, new UserProfileView().getElement());
-  Render.render(FilmsSection.getElement(), FilmsList.getElement());
-  Render.render(FilmsList.getElement(), new FilmsListContainerView().getElement());
+  Render.render(siteHeaderElement, new UserProfileView());
+  Render.render(FilmsSection, FilmsList);
+  Render.render(FilmsList, new FilmsListContainerView());
 
   const filmsListContainerElement = FilmsList.getElement().querySelector(`.films-list__container`);
 
@@ -92,7 +91,7 @@ if (films.length === 0) {
 
     const ShowMoreButton = new ShowMoreButtonView();
 
-    Render.render(FilmsList.getElement(), ShowMoreButton.getElement());
+    Render.render(FilmsList, ShowMoreButton);
 
     ShowMoreButton.setButtonClickHandler(() => {
       films
@@ -102,19 +101,19 @@ if (films.length === 0) {
       renderedFilmsCount += FILMS_COUNT_PER_STEP;
 
       if (renderedFilmsCount >= films.length) {
-        ShowMoreButton.getElement().remove();
+        Render.remove(ShowMoreButton);
       }
     });
   }
 
   for (const extraListTitle of extraListTitles) {
-    Render.render(FilmsSection.getElement(), new FilmsListExtraView(extraListTitle).getElement());
+    Render.render(FilmsSection, new FilmsListExtraView(extraListTitle));
   }
 
   const filmsListExtraElements = FilmsSection.getElement().querySelectorAll(`.films-list--extra`);
 
   filmsListExtraElements.forEach((container) => {
-    Render.render(container, new FilmsListContainerView().getElement());
+    Render.render(container, new FilmsListContainerView());
 
     const filmsListContainerExtraElement = container.querySelector(`.films-list__container`);
 
@@ -124,5 +123,4 @@ if (films.length === 0) {
   });
 }
 
-
-Render.render(footerStatisticsElement, new FilmsStatisticsView(films.length).getElement());
+Render.render(footerStatisticsElement, new FilmsStatisticsView(films.length));
