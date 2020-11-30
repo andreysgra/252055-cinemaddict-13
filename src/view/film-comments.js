@@ -1,4 +1,5 @@
-import {Render, FormatTime} from '../utils';
+import AbstractView from './abstract';
+import {FormatTime} from '../utils';
 
 const createCommentsTemplate = (commentIds, comments) => {
   return commentIds
@@ -37,26 +38,14 @@ const createFilmCommentsTemplate = (commentIds, comments) => {
   `;
 };
 
-export default class FilmComments {
+export default class FilmComments extends AbstractView {
   constructor(commentIds, comments) {
-    this._element = null;
+    super();
     this._commentIds = commentIds;
     this._comments = comments;
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = Render.createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
   getTemplate() {
     return createFilmCommentsTemplate(this._commentIds, this._comments);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

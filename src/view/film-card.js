@@ -1,4 +1,5 @@
-import {default as Utils, FormatTime, Render} from '../utils';
+import AbstractView from './abstract';
+import {default as Utils, FormatTime} from '../utils';
 
 const addActiveControlClass = (isActive) => {
   return isActive ? `film-card__controls-item--active` : ``;
@@ -53,27 +54,15 @@ const createFilmCardTemplate = (film) => {
   `;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
     this._currentItem = null;
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = Render.createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   setElementsClickHandler(handler) {

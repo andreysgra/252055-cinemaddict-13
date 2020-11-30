@@ -1,4 +1,5 @@
-import {Render, FormatTime} from '../utils';
+import AbstractView from './abstract';
+import {FormatTime} from '../utils';
 
 const addCheckedProperty = (isChecked) => {
   return isChecked ? `checked` : ``;
@@ -161,26 +162,14 @@ const createFilmDetailsTemplate = (film) => {
   `;
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Render.createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   setCloseButtonClickHandler(handler) {
