@@ -59,6 +59,12 @@ export default class FilmCard extends AbstractView {
     super();
     this._film = film;
     this._currentItem = null;
+
+    this._clickHandler = this._clickHandler.bind(this);
+  }
+
+  _clickHandler(film) {
+    this._handler.click(film);
   }
 
   getTemplate() {
@@ -66,6 +72,8 @@ export default class FilmCard extends AbstractView {
   }
 
   setElementsClickHandler(handler) {
+    this._handler.click = handler;
+
     this.getElement()
       .addEventListener(`click`, (evt) => {
         this._currentItem = evt.target;
@@ -76,7 +84,7 @@ export default class FilmCard extends AbstractView {
           return;
         }
 
-        handler(this._film);
+        this._clickHandler(this._film);
       });
   }
 }

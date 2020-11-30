@@ -94,9 +94,7 @@ if (films.length === 0) {
 
     Render.render(FilmsList.getElement(), ShowMoreButton.getElement());
 
-    ShowMoreButton.setButtonClickHandler((evt) => {
-      evt.preventDefault();
-
+    ShowMoreButton.setButtonClickHandler(() => {
       films
         .slice(renderedFilmsCount, renderedFilmsCount + FILMS_COUNT_PER_STEP)
         .forEach((film) => renderFilm(filmsListContainerElement, film));
