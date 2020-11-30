@@ -23,7 +23,7 @@ export default class ShowMoreButton extends AbstractView {
     return createShowMoreButtonTemplate();
   }
 
-  setButtonClickHandler(handler) {
+  setClickHandler(handler) {
     this._handler.click = handler;
 
     this.getElement()

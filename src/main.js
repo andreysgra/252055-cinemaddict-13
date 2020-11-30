@@ -34,7 +34,7 @@ const FilmsList = new FilmsListView();
 const renderFilm = (container, film) => {
   const FilmCard = new FilmCardView(film);
 
-  FilmCard.setElementsClickHandler((filmInfo) => {
+  FilmCard.setClickHandler((filmInfo) => {
     const FilmDetails = new FilmDetailsView(filmInfo);
 
     const closeFilmDetails = () => {
@@ -93,7 +93,7 @@ if (films.length === 0) {
 
     Render.render(FilmsList, ShowMoreButton);
 
-    ShowMoreButton.setButtonClickHandler(() => {
+    ShowMoreButton.setClickHandler(() => {
       films
         .slice(renderedFilmsCount, renderedFilmsCount + FILMS_COUNT_PER_STEP)
         .forEach((film) => renderFilm(filmsListContainerElement, film));
