@@ -1,5 +1,23 @@
 import {DESCRIPTION_LENGTH} from '../const';
 
+const RankScore = {
+  NOVICE: {
+    MIN: 1,
+    MAX: 10
+  },
+  FAN: {
+    MIN: 11,
+    MAX: 20
+  }
+};
+
+const RankTitle = {
+  NONE: ``,
+  NOVICE: `Novice`,
+  FAN: `Fan`,
+  MOVIE_BUFF: `Movie Buff`
+};
+
 export default class {
   static addLeadZero(value) {
     return value < 10 ? `0${value}` : String(value);
@@ -26,6 +44,20 @@ export default class {
 
   static getShortDescription(description) {
     return description.length >= DESCRIPTION_LENGTH ? `${description.slice(0, DESCRIPTION_LENGTH - 1)}...` : description;
+  }
+
+  static getUserRank(films) {
+    const totalWatch = films.reduce((count, film) => count + Number(film.userInfo.isWatched), 0);
+
+    if (totalWatch >= RankScore.NOVICE.MIN && totalWatch <= RankScore.NOVICE.MAX) {
+      return RankTitle.NOVICE;
+    } else if (totalWatch >= RankScore.FAN.MIN && totalWatch <= RankScore.FAN.MAX) {
+      return RankTitle.FAN;
+    } else if (totalWatch > RankScore.FAN.MAX) {
+      return RankTitle.MOVIE_BUFF;
+    } else {
+      return RankTitle.NONE;
+    }
   }
 
   static setCounter(i = 0) {

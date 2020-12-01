@@ -12,7 +12,7 @@ import FilmsStatisticsView from './view/films-statistics';
 import FilmDetailsView from './view/film-details';
 import FilmCommentsView from './view/film-comments';
 import NoFilms from './view/no-films';
-import {Render} from './utils';
+import {Utils, Render} from './utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition} from './const';
 import {generateFilms} from './mock/films';
 import {generateComments} from './mock/comments';
@@ -100,7 +100,7 @@ Render.render(footerStatisticsElement, new FilmsStatisticsView(films.length));
 if (films.length === 0) {
   Render.render(FilmsSection, new NoFilms());
 } else {
-  Render.render(siteHeaderElement, new UserProfileView());
+  Render.render(siteHeaderElement, new UserProfileView(Utils.getUserRank(films)));
   Render.render(FilmsSection, new SortingListView(), RenderPosition.BEFOREBEGIN);
   Render.render(FilmsSection, FilmsList);
   Render.render(FilmsList, new FilmsListContainerView());
