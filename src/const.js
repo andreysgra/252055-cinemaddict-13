@@ -13,3 +13,10 @@ export const RenderPosition = {
   BEFOREBEGIN: `beforebegin`,
   AFTEREND: `afterend`
 };
+
+export const emotions = [
+  `smile`,
+  `sleeping`,
+  `puke`,
+  `angry`
+];

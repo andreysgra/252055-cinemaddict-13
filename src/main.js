@@ -11,6 +11,7 @@ import FilmsListExtraView from './view/films-list-extra';
 import FilmsStatisticsView from './view/films-statistics';
 import FilmDetailsView from './view/film-details';
 import FilmCommentsView from './view/film-comments';
+import FilmNewCommentView from './view/film-new-comment';
 import NoFilms from './view/no-films';
 import {Utils, Render} from './utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition} from './const';
@@ -46,6 +47,8 @@ const renderFilm = (container, film) => {
 
   FilmCard.setClickHandler((filmInfo) => {
     const FilmDetails = new FilmDetailsView(filmInfo);
+    const FilmComments = new FilmCommentsView(filmInfo.comments, comments);
+    const FilmNewComment = new FilmNewCommentView();
 
     const closeFilmDetails = () => {
       Render.remove(FilmDetails);
@@ -70,9 +73,10 @@ const renderFilm = (container, film) => {
 
     Render.render(document.body, FilmDetails);
 
-    const filmDetailsCommentsTitleElement = document.querySelector(`.film-details__comments-title`);
+    const filmDetailsCommentsWrapElement = FilmDetails.getElement().querySelector(`.film-details__comments-wrap`);
 
-    Render.render(filmDetailsCommentsTitleElement, new FilmCommentsView(filmInfo.comments, comments), RenderPosition.AFTEREND);
+    Render.render(filmDetailsCommentsWrapElement, FilmComments);
+    Render.render(filmDetailsCommentsWrapElement, FilmNewComment);
   });
 
   Render.render(container, FilmCard);
