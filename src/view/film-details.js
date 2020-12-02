@@ -1,5 +1,6 @@
 import AbstractView from './abstract';
 import {FormatTime} from '../utils';
+import {filmControlMap} from '../const';
 
 const addCheckedProperty = (isChecked) => {
   return isChecked ? `checked` : ``;
@@ -9,6 +10,13 @@ const createGenresTemplate = (genres) => {
   return genres
     .map((genre) => `<span class="film-details__genre">${genre}</span>`)
     .join(``);
+};
+
+const createFilmControl = ([key, value], checked) => {
+  return `
+    <input type="checkbox" class="film-details__control-input visually-hidden" id="${key}" name="${key}" ${checked}>
+    <label for="${key}" class="film-details__control-label film-details__control-label--${key}">${value}</label>
+  `;
 };
 
 const createFilmDetailsTemplate = (film) => {
@@ -30,11 +38,7 @@ const createFilmDetailsTemplate = (film) => {
       description,
       ageRating
     },
-    userInfo: {
-      isWatchlist,
-      isWatched,
-      isFavorite
-    },
+    userInfo,
     comments
   } = film;
 
@@ -42,12 +46,16 @@ const createFilmDetailsTemplate = (film) => {
   const duration = FormatTime.duration(runtime);
   const writersList = writers.join(`, `);
   const actorsList = actors.join(`, `);
-  const isWatchlistChecked = addCheckedProperty(isWatchlist);
-  const isWatchedChecked = addCheckedProperty(isWatched);
-  const isFavoriteChecked = addCheckedProperty(isFavorite);
   const genreTitle = genres.length > 1 ? `Genres` : `Genre`;
   const genresList = createGenresTemplate(genres);
   const commentsCount = comments.length;
+  const userInfoValues = Object.values(userInfo);
+
+  const filmControls = Object.entries(filmControlMap)
+    .map((item, index) => {
+      return createFilmControl(item, addCheckedProperty(userInfoValues[index]));
+    })
+    .join(``);
 
   return `
     <section class="film-details">
@@ -111,20 +119,14 @@ const createFilmDetailsTemplate = (film) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isWatchlistChecked}>
-            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
-
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatchedChecked}>
-            <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
-
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavoriteChecked}>
-            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
+            ${filmControls}
           </section>
         </div>
 
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span>
+            <h3 class="film-details__comments-title">
+              Comments <span class="film-details__comments-count">${commentsCount}</span>
             </h3>
           </section>
         </div>

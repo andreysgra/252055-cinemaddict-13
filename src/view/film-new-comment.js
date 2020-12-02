@@ -23,7 +23,9 @@ const createFilmNewCommentTemplate = () => {
         <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
       </label>
 
-      <div class="film-details__emoji-list">${emotionsList}</div>
+      <div class="film-details__emoji-list">
+        ${emotionsList}
+      </div>
     </div>
   `;
 };

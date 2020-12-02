@@ -20,3 +20,9 @@ export const emotions = [
   `puke`,
   `angry`
 ];
+
+export const filmControlMap = {
+  'watchlist': `Add to watchlist`,
+  'watched': `Already watched`,
+  'favorite': `Add to favorites`
+};
