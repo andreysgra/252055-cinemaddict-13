@@ -19,6 +19,14 @@ const RankTitle = {
 };
 
 export default class {
+  static addEscapeEvent(evt, action) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      action(evt);
+    }
+  }
+
   static addLeadZero(value) {
     return value < 10 ? `0${value}` : String(value);
   }

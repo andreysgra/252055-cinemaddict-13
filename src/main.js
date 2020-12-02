@@ -42,42 +42,35 @@ const siteMenu = new SiteMenuView();
 const FilmsSection = new FilmsSectionView();
 const FilmsList = new FilmsListView();
 
+const renderFilmDetails = (film) => {
+  const FilmDetails = new FilmDetailsView(film);
+  const FilmComments = new FilmCommentsView(film.comments, comments);
+  const FilmNewComment = new FilmNewCommentView();
+  const filmDetailsCommentsWrapElement = FilmDetails.getElement()
+    .querySelector(`.film-details__comments-wrap`);
+
+  const closeFilmDetails = () => {
+    Render.remove(FilmDetails);
+    document.body.classList.remove(`hide-overflow`);
+    document.removeEventListener(`keydown`, escKeyDownHandler);
+  };
+
+  const escKeyDownHandler = (evt) => Utils.addEscapeEvent(evt, closeFilmDetails);
+
+  document.body.classList.add(`hide-overflow`);
+  document.addEventListener(`keydown`, escKeyDownHandler);
+
+  FilmDetails.setCloseButtonClickHandler(closeFilmDetails);
+
+  Render.render(document.body, FilmDetails);
+  Render.render(filmDetailsCommentsWrapElement, FilmComments);
+  Render.render(filmDetailsCommentsWrapElement, FilmNewComment);
+};
+
 const renderFilm = (container, film) => {
   const FilmCard = new FilmCardView(film);
 
-  FilmCard.setClickHandler((filmInfo) => {
-    const FilmDetails = new FilmDetailsView(filmInfo);
-    const FilmComments = new FilmCommentsView(filmInfo.comments, comments);
-    const FilmNewComment = new FilmNewCommentView();
-
-    const closeFilmDetails = () => {
-      Render.remove(FilmDetails);
-      document.body.classList.remove(`hide-overflow`);
-      document.removeEventListener(`keydown`, escKeyDownHandler);
-    };
-
-    const escKeyDownHandler = (evt) => {
-      const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-      if (isEscKey) {
-        closeFilmDetails();
-      }
-    };
-
-    FilmDetails.setCloseButtonClickHandler(() => {
-      closeFilmDetails();
-    });
-
-    document.body.classList.add(`hide-overflow`);
-    document.addEventListener(`keydown`, escKeyDownHandler);
-
-    Render.render(document.body, FilmDetails);
-
-    const filmDetailsCommentsWrapElement = FilmDetails.getElement().querySelector(`.film-details__comments-wrap`);
-
-    Render.render(filmDetailsCommentsWrapElement, FilmComments);
-    Render.render(filmDetailsCommentsWrapElement, FilmNewComment);
-  });
+  FilmCard.setClickHandler(renderFilmDetails);
 
   Render.render(container, FilmCard);
 };
