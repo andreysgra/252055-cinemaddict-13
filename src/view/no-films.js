@@ -1,4 +1,4 @@
-import {Render} from '../utils';
+import AbstractView from './abstract';
 
 const createNoFilmsTemplate = () => {
   return `
@@ -8,24 +8,8 @@ const createNoFilmsTemplate = () => {
   `;
 };
 
-export default class NoFilms {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Render.createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
+export default class NoFilms extends AbstractView {
   getTemplate() {
     return createNoFilmsTemplate();
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,3 +1,4 @@
+import AbstractView from '../view/abstract';
 import {RenderPosition} from '../const';
 
 export default class Render {
@@ -10,6 +11,14 @@ export default class Render {
   }
 
   static render(container, element, position = RenderPosition.BEFOREEND) {
+    if (container instanceof AbstractView) {
+      container = container.getElement();
+    }
+
+    if (element instanceof AbstractView) {
+      element = element.getElement();
+    }
+
     switch (position) {
       case RenderPosition.AFTERBEGIN:
         container.prepend(element);
@@ -27,6 +36,19 @@ export default class Render {
   }
 
   static renderTemplate(container, template, position = RenderPosition.BEFOREEND) {
+    if (container instanceof AbstractView) {
+      container = container.getElement();
+    }
+
     return container.insertAdjacentHTML(position, template);
+  }
+
+  static remove(component) {
+    if (!(component instanceof AbstractView)) {
+      throw new Error(`Can remove only components`);
+    }
+
+    component.getElement().remove();
+    component.removeElement();
   }
 }

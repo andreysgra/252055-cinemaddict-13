@@ -1,4 +1,4 @@
-import {Render} from '../utils';
+import AbstractView from './abstract';
 
 const createSiteMenuTemplate = () => {
   return `
@@ -8,24 +8,8 @@ const createSiteMenuTemplate = () => {
   `;
 };
 
-export default class SiteMenu {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Render.createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
+export default class SiteMenu extends AbstractView {
   getTemplate() {
     return createSiteMenuTemplate();
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

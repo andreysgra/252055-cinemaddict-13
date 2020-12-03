@@ -1,4 +1,4 @@
-import {Render} from '../utils';
+import AbstractView from './abstract';
 
 const createSortingListTemplate = () => {
   return `
@@ -10,24 +10,8 @@ const createSortingListTemplate = () => {
   `;
 };
 
-export default class SortingList {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Render.createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
+export default class SortingList extends AbstractView {
   getTemplate() {
     return createSortingListTemplate();
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

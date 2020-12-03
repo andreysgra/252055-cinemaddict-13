@@ -1,4 +1,4 @@
-import Utils from '../utils';
+import {Utils} from '../utils';
 import * as consts from "./const";
 
 const generateDescription = (sentences) => {
@@ -47,7 +47,7 @@ const generateReleaseDate = () => {
 };
 
 const generateTotalRating = () => {
-  const MIN_RATING = 1;
+  const MIN_RATING = 0;
   const MAX_RATING = 9;
 
   return (Utils.getRandomInteger(MIN_RATING, MAX_RATING) + Math.random()).toFixed(1);

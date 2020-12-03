@@ -1,4 +1,5 @@
-import {default as Utils, Render} from '../utils';
+import AbstractView from './abstract';
+import {Utils} from '../utils';
 
 const createFilterItemTemplate = ({name, count}, isActive) => {
   const filterName = name !== `all`
@@ -30,25 +31,13 @@ const createFilmsFilterTemplate = (filters) => {
   `;
 };
 
-export default class FilmsFilter {
+export default class FilmsFilter extends AbstractView {
   constructor(filters) {
-    this._element = null;
+    super();
     this._filters = filters;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Render.createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {
     return createFilmsFilterTemplate(this._filters);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

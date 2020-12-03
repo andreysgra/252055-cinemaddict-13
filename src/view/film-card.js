@@ -1,7 +1,15 @@
-import {default as Utils, FormatTime, Render} from '../utils';
+import AbstractView from './abstract';
+import {Utils, FormatTime} from '../utils';
+import {filmControlMap} from '../const';
 
 const addActiveControlClass = (isActive) => {
   return isActive ? `film-card__controls-item--active` : ``;
+};
+
+const createFilmControl = ([key, value], isActive) => {
+  return `
+    <button class="film-card__controls-item button film-card__controls-item--${key} ${isActive}" type="button">${value}</button>
+  `;
 };
 
 const createFilmCardTemplate = (film) => {
@@ -15,11 +23,7 @@ const createFilmCardTemplate = (film) => {
       poster,
       description
     },
-    userInfo: {
-      isWatchlist,
-      isWatched,
-      isFavorite
-    },
+    userInfo,
     comments
   } = film;
 
@@ -28,9 +32,12 @@ const createFilmCardTemplate = (film) => {
   const genre = genres[0];
   const filmDescription = Utils.getShortDescription(description);
   const commentsCount = comments.length;
-  const isWatchlistActive = addActiveControlClass(isWatchlist);
-  const isWatchedActive = addActiveControlClass(isWatched);
-  const isFavoriteActive = addActiveControlClass(isFavorite);
+  const userInfoValues = Object.values(userInfo);
+  const filmControls = Object.entries(filmControlMap)
+    .map((item, index) => {
+      return createFilmControl(item, addActiveControlClass(userInfoValues[index]));
+    })
+    .join(``);
 
   return `
     <article class="film-card">
@@ -45,49 +52,88 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__description">${filmDescription}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isWatchlistActive}" type="button">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isWatchedActive}" type="button">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavoriteActive}" type="button">Mark as favorite</button>
+        ${filmControls}
       </div>
     </article>
   `;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
     this._currentItem = null;
+
+    this._clickHandler = this._clickHandler.bind(this);
+    this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
+    this._watchedButtonClickHandler = this._watchedButtonClickHandler.bind(this);
+    this._watchlistButtonClickHandler = this._watchlistButtonClickHandler.bind(this);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = Render.createElement(this.getTemplate());
+  _clickHandler(evt) {
+    this._currentItem = evt.target;
+
+    if (this._currentItem.className !== `film-card__poster`
+      && this._currentItem.className !== `film-card__title`
+      && this._currentItem.className !== `film-card__comments`) {
+      return;
     }
 
-    return this._element;
+    evt.preventDefault();
+
+    this._handler.click(this._film);
+  }
+
+  _favoriteButtonClickHandler(evt) {
+    evt.preventDefault();
+
+    this._handler.clickFavorite();
+  }
+
+  _watchedButtonClickHandler(evt) {
+    evt.preventDefault();
+
+    this._handler.clickWatched();
+  }
+
+  _watchlistButtonClickHandler(evt) {
+    evt.preventDefault();
+
+    this._handler.clickWatchlist(evt);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(handler) {
+    this._handler.click = handler;
+
+    this.getElement()
+      .addEventListener(`click`, this._clickHandler);
   }
 
-  setElementsClickHandler(handler) {
+  setFavoriteButtonClickHandler(handler) {
+    this._handler.clickFavorite = handler;
+
     this.getElement()
-      .addEventListener(`click`, (evt) => {
-        this._currentItem = evt.target;
+      .querySelector(`.film-card__controls-item--favorite`)
+      .addEventListener(`click`, this._favoriteButtonClickHandler);
+  }
 
-        if (this._currentItem.className !== `film-card__poster`
-          && this._currentItem.className !== `film-card__title`
-          && this._currentItem.className !== `film-card__comments`) {
-          return;
-        }
+  setWatchedButtonClickHandler(handler) {
+    this._handler.clickWatched = handler;
 
-        handler(this._film);
-      });
+    this.getElement()
+      .querySelector(`.film-card__controls-item--watched`)
+      .addEventListener(`click`, this._watchedButtonClickHandler);
+  }
+
+  setWatchlistButtonClickHandler(handler) {
+    this._handler.clickWatchlist = handler;
+
+    this.getElement()
+      .querySelector(`.film-card__controls-item--watchlist`)
+      .addEventListener(`click`, this._watchlistButtonClickHandler);
   }
 }
