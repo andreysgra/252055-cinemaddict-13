@@ -99,7 +99,7 @@ export default class FilmCard extends AbstractView {
   _watchlistButtonClickHandler(evt) {
     evt.preventDefault();
 
-    this._handler.clickWatchlist();
+    this._handler.clickWatchlist(evt);
   }
 
   getTemplate() {

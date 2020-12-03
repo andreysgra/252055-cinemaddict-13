@@ -140,12 +140,27 @@ export default class FilmDetails extends AbstractView {
     this._film = film;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
+    this._watchedCheckboxClickHandler = this._watchedCheckboxClickHandler.bind(this);
+    this._watchlistCheckboxClickHandler = this._watchlistCheckboxClickHandler.bind(this);
+    this._favoriteCheckboxClickHandler = this._favoriteCheckboxClickHandler.bind(this);
   }
 
   _closeButtonClickHandler(evt) {
     evt.preventDefault();
 
     this._handler.click();
+  }
+
+  _favoriteCheckboxClickHandler() {
+    this._handler.clickFavorite();
+  }
+
+  _watchedCheckboxClickHandler() {
+    this._handler.clickWatched();
+  }
+
+  _watchlistCheckboxClickHandler() {
+    this._handler.clickWatchlist();
   }
 
   getTemplate() {
@@ -158,5 +173,29 @@ export default class FilmDetails extends AbstractView {
     this.getElement()
       .querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, this._closeButtonClickHandler);
+  }
+
+  setFavoriteCheckboxClickHandler(handler) {
+    this._handler.clickFavorite = handler;
+
+    this.getElement()
+      .querySelector(`#favorite`)
+      .addEventListener(`click`, this._favoriteCheckboxClickHandler);
+  }
+
+  setWatchedCheckboxClickHandler(handler) {
+    this._handler.clickWatched = handler;
+
+    this.getElement()
+      .querySelector(`#watched`)
+      .addEventListener(`click`, this._watchedCheckboxClickHandler);
+  }
+
+  setWatchlistCheckboxClickHandler(handler) {
+    this._handler.clickWatchlist = handler;
+
+    this.getElement()
+      .querySelector(`#watchlist`)
+      .addEventListener(`click`, this._watchlistCheckboxClickHandler);
   }
 }
