@@ -50,7 +50,6 @@ const createFilmDetailsTemplate = (film) => {
   const genresList = createGenresTemplate(genres);
   const commentsCount = comments.length;
   const userInfoValues = Object.values(userInfo);
-
   const filmControls = Object.entries(filmControlMap)
     .map((item, index) => {
       return createFilmControl(item, addCheckedProperty(userInfoValues[index]));

@@ -1,8 +1,15 @@
 import AbstractView from './abstract';
 import {Utils, FormatTime} from '../utils';
+import {filmControlMap} from '../const';
 
 const addActiveControlClass = (isActive) => {
   return isActive ? `film-card__controls-item--active` : ``;
+};
+
+const createFilmControl = ([key, value], isActive) => {
+  return `
+    <button class="film-card__controls-item button film-card__controls-item--${key} ${isActive}" type="button">${value}</button>
+  `;
 };
 
 const createFilmCardTemplate = (film) => {
@@ -16,11 +23,7 @@ const createFilmCardTemplate = (film) => {
       poster,
       description
     },
-    userInfo: {
-      isWatchlist,
-      isWatched,
-      isFavorite
-    },
+    userInfo,
     comments
   } = film;
 
@@ -29,9 +32,12 @@ const createFilmCardTemplate = (film) => {
   const genre = genres[0];
   const filmDescription = Utils.getShortDescription(description);
   const commentsCount = comments.length;
-  const isWatchlistActive = addActiveControlClass(isWatchlist);
-  const isWatchedActive = addActiveControlClass(isWatched);
-  const isFavoriteActive = addActiveControlClass(isFavorite);
+  const userInfoValues = Object.values(userInfo);
+  const filmControls = Object.entries(filmControlMap)
+    .map((item, index) => {
+      return createFilmControl(item, addActiveControlClass(userInfoValues[index]));
+    })
+    .join(``);
 
   return `
     <article class="film-card">
@@ -46,9 +52,7 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__description">${filmDescription}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isWatchlistActive}" type="button">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isWatchedActive}" type="button">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavoriteActive}" type="button">Mark as favorite</button>
+        ${filmControls}
       </div>
     </article>
   `;
