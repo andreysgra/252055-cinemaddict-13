@@ -4,18 +4,17 @@ import FilmsSectionView from '../view/films-section';
 import FilmsListView from '../view/films-list';
 import FilmsListContainerView from '../view/films-list-container';
 import FilmsListExtraView from '../view/films-list-extra';
-import FilmCardView from '../view/film-card';
-import FilmDetailsView from '../view/film-details';
-import FilmCommentsView from '../view/film-comments';
-import FilmNewCommentView from '../view/film-new-comment';
 import ShowMoreButtonView from '../view/show-more-button';
 import NoFilms from '../view/no-films';
+import FilmPresenter from './film';
 import {Utils, Render} from '../utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition} from '../const';
 
 export default class Films {
   constructor(container) {
     this._container = container;
+    this._films = [];
+    this._comments = [];
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
 
     this._userProfileComponent = null;
@@ -30,12 +29,7 @@ export default class Films {
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._siteHeaderElement = document.querySelector(`.header`);
 
-    this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
-  }
-
-  _handleFilmCardClick(film) {
-    this._renderFilmDetails(film);
   }
 
   _handleShowMoreButtonClick() {
@@ -78,40 +72,9 @@ export default class Films {
   }
 
   _renderFilm(container, film) {
-    const filmComponent = new FilmCardView(film);
+    const filmPresenter = new FilmPresenter(container);
 
-    filmComponent.setClickHandler(this._handleFilmCardClick);
-    Render.render(container, filmComponent);
-  }
-
-  _renderFilmDetails(film) {
-    this._filmDetailsComponent = new FilmDetailsView(film);
-    this._filmCommentsComponent = new FilmCommentsView(film.comments, this._comments);
-    this._filmNewCommentComponent = new FilmNewCommentView();
-
-    const filmDetailsCommentsWrapElement = this._filmDetailsComponent.getElement()
-      .querySelector(`.film-details__comments-wrap`);
-
-    const closeFilmDetails = () => {
-      Render.remove(this._filmDetailsComponent);
-      this._filmDetailsComponent = null;
-      this._filmCommentsComponent = null;
-      this._filmNewCommentComponent = null;
-
-      document.body.classList.remove(`hide-overflow`);
-      document.removeEventListener(`keydown`, escKeyDownHandler);
-    };
-
-    const escKeyDownHandler = (evt) => Utils.addEscapeEvent(evt, closeFilmDetails);
-
-    document.body.classList.add(`hide-overflow`);
-    document.addEventListener(`keydown`, escKeyDownHandler);
-
-    this._filmDetailsComponent.setCloseButtonClickHandler(closeFilmDetails);
-
-    Render.render(document.body, this._filmDetailsComponent);
-    Render.render(filmDetailsCommentsWrapElement, this._filmCommentsComponent);
-    Render.render(filmDetailsCommentsWrapElement, this._filmNewCommentComponent);
+    filmPresenter.init(film, this._comments);
   }
 
   _renderFilms(from, to) {

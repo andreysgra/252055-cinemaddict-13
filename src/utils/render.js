@@ -10,6 +10,15 @@ export default class Render {
     return element.firstElementChild;
   }
 
+  static remove(component) {
+    if (!(component instanceof AbstractView)) {
+      throw new Error(`Can remove only components`);
+    }
+
+    component.getElement().remove();
+    component.removeElement();
+  }
+
   static render(container, element, position = RenderPosition.BEFOREEND) {
     if (container instanceof AbstractView) {
       container = container.getElement();
@@ -43,12 +52,23 @@ export default class Render {
     return container.insertAdjacentHTML(position, template);
   }
 
-  static remove(component) {
-    if (!(component instanceof AbstractView)) {
-      throw new Error(`Can remove only components`);
+  static replace(newElement, oldElement) {
+    if (newElement instanceof AbstractView) {
+      newElement = newElement.getElement();
     }
 
-    component.getElement().remove();
-    component.removeElement();
+    if (oldElement instanceof AbstractView) {
+      oldElement = oldElement.getElement();
+    }
+
+    const parentElement = oldElement.parentElement;
+
+    if (parentElement === null || oldElement === null || newElement === null) {
+      throw new Error(`Can't replace unexisting elements`);
+    }
+
+    if (parentElement.contains(oldElement)) {
+      parentElement.replaceChild(newElement, oldElement);
+    }
   }
 }
