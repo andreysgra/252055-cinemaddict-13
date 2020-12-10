@@ -26,3 +26,8 @@ export const filmControlMap = {
   'watched': `Already watched`,
   'favorite': `Add to favorites`
 };
+
+export const Mode = {
+  DEFAULT: `default`,
+  EDITING: `editing`
+};
