@@ -188,10 +188,10 @@ export default class Films {
   _sortFilms(sortType) {
     switch (sortType) {
       case SortType.DATE:
-        this._films.sort((a, b) => b.filmInfo.release.date - a.filmInfo.release.date);
+        this._films.sort(Utils.sortFilmsByDate);
         break;
       case SortType.RATING:
-        this._films.sort((a, b) => b.filmInfo.totalRating - a.filmInfo.totalRating);
+        this._films.sort(Utils.sortFilmsByRating);
         break;
       default:
         this._films = this._sourcedFilms.slice();
@@ -208,12 +208,12 @@ export default class Films {
 
     this._topRatedFilms = films
       .filter((film) => film.filmInfo.totalRating > 0)
-      .sort((a, b) => b.filmInfo.totalRating - a.filmInfo.totalRating)
+      .sort(Utils.sortFilmsByRating)
       .slice(0, FILMS_EXTRA_COUNT);
 
     this._mostCommentedFilms = films
       .filter((film) => film.comments.length > 0)
-      .sort((a, b) => b.comments.length - a.comments.length)
+      .sort(Utils.sortFilmsByComments)
       .slice(0, FILMS_EXTRA_COUNT);
 
     Render.render(this._container, this._filmsComponent);

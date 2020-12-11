@@ -84,6 +84,22 @@ export default class {
     return array;
   }
 
+  static sortCommentsByDate(commentA, commentB) {
+    return commentB.date - commentA.date;
+  }
+
+  static sortFilmsByComments(filmA, filmB) {
+    return filmB.comments.length - filmA.comments.length;
+  }
+
+  static sortFilmsByDate(filmA, filmB) {
+    return filmB.filmInfo.release.date - filmA.filmInfo.release.date;
+  }
+
+  static sortFilmsByRating(filmA, filmB) {
+    return filmB.filmInfo.totalRating - filmA.filmInfo.totalRating;
+  }
+
   static toUpperCaseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
