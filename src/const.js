@@ -31,3 +31,9 @@ export const Mode = {
   DEFAULT: `default`,
   EDITING: `editing`
 };
+
+export const SortType = {
+  DEFAULT: `default`,
+  DATE: `date`,
+  RATING: `rating`
+};

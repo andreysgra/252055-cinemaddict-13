@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {FormatTime} from '../utils';
+import {Utils, FormatTime} from '../utils';
 
 const createCommentTemplate = (item) => {
   const {comment, emotion, author, date} = item;
@@ -25,7 +25,7 @@ const createCommentTemplate = (item) => {
 const createFilmCommentsTemplate = (commentIds, comments) => {
   const commentsList = commentIds
     .map((commentId) => comments.find((comment) => comment.id === commentId))
-    .sort((a, b) => b.date - a.date)
+    .sort(Utils.sortCommentsByDate)
     .map((item) => createCommentTemplate(item))
     .join(``);
 
