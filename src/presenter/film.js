@@ -1,9 +1,8 @@
 import FilmCardView from '../view/film-card';
 import FilmDetailsView from '../view/film-details';
 import FilmCommentsView from '../view/film-comments';
-import FilmNewCommentView from '../view/film-new-comment';
 import {Utils, Render} from '../utils';
-import {Mode} from '../const';
+import {Mode, RenderPosition} from '../const';
 
 export default class Film {
   constructor(container, changeData, changeMode) {
@@ -16,7 +15,6 @@ export default class Film {
     this._filmComponent = null;
     this._filmDetailsComponent = null;
     this._filmCommentsComponent = null;
-    this._filmNewCommentComponent = null;
     this._mode = Mode.DEFAULT;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
@@ -98,10 +96,9 @@ export default class Film {
   _renderFilmDetails(film) {
     this._filmDetailsComponent = new FilmDetailsView(film);
     this._filmCommentsComponent = new FilmCommentsView(film.comments, this._comments);
-    this._filmNewCommentComponent = new FilmNewCommentView();
 
-    const filmDetailsCommentsWrapElement = this._filmDetailsComponent.getElement()
-      .querySelector(`.film-details__comments-wrap`);
+    const commentsTitleElement = this._filmDetailsComponent.getElement()
+      .querySelector(`.film-details__comments-title`);
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
@@ -116,8 +113,7 @@ export default class Film {
 
 
     Render.render(document.body, this._filmDetailsComponent);
-    Render.render(filmDetailsCommentsWrapElement, this._filmCommentsComponent);
-    Render.render(filmDetailsCommentsWrapElement, this._filmNewCommentComponent);
+    Render.render(commentsTitleElement, this._filmCommentsComponent, RenderPosition.AFTEREND);
   }
 
   destroy() {

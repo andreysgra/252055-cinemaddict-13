@@ -1,6 +1,6 @@
 import AbstractView from './abstract';
 import {FormatTime} from '../utils';
-import {filmControlMap} from '../const';
+import {filmControlMap, emotions} from '../const';
 
 const addCheckedProperty = (isChecked) => {
   return isChecked ? `checked` : ``;
@@ -16,6 +16,35 @@ const createFilmControl = ([key, value], checked) => {
   return `
     <input type="checkbox" class="film-details__control-input visually-hidden" id="${key}" name="${key}" ${checked}>
     <label for="${key}" class="film-details__control-label film-details__control-label--${key}">${value}</label>
+  `;
+};
+
+const createEmotion = (emotion) => {
+  return `
+    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
+    <label class="film-details__emoji-label" for="emoji-${emotion}">
+      <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
+    </label>
+  `;
+};
+
+const createFilmNewCommentTemplate = () => {
+  const emotionsList = emotions
+    .map((emotion) => createEmotion(emotion))
+    .join(``);
+
+  return `
+    <div class="film-details__new-comment">
+      <div class="film-details__add-emoji-label"></div>
+
+      <label class="film-details__comment-label">
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+      </label>
+
+      <div class="film-details__emoji-list">
+        ${emotionsList}
+      </div>
+    </div>
   `;
 };
 
@@ -55,6 +84,8 @@ const createFilmDetailsTemplate = (film) => {
       return createFilmControl(item, addCheckedProperty(userInfoValues[index]));
     })
     .join(``);
+
+  const filmNewComment = createFilmNewCommentTemplate();
 
   return `
     <section class="film-details">
@@ -127,6 +158,8 @@ const createFilmDetailsTemplate = (film) => {
             <h3 class="film-details__comments-title">
               Comments <span class="film-details__comments-count">${commentsCount}</span>
             </h3>
+
+            ${filmNewComment}
           </section>
         </div>
       </form>
