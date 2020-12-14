@@ -1,6 +1,6 @@
 import AbstractView from './abstract';
 import {FormatTime} from '../utils';
-import {filmControlMap, emotions} from '../const';
+import {filmControlMap, Emotions} from '../const';
 
 const addCheckedProperty = (isChecked) => {
   return isChecked ? `checked` : ``;
@@ -19,23 +19,25 @@ const createFilmControl = ([key, value], checked) => {
   `;
 };
 
-const createEmotion = (emotion) => {
+const createEmotion = (emotion, checked) => {
   return `
-    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
+    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}" ${checked}>
     <label class="film-details__emoji-label" for="emoji-${emotion}">
       <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
     </label>
   `;
 };
 
-const createFilmNewCommentTemplate = () => {
-  const emotionsList = emotions
-    .map((emotion) => createEmotion(emotion))
+const createFilmNewCommentTemplate = (emojiIcon, hasEmoji, checkedEmojiItem) => {
+  const emotionsList = Object.values(Emotions)
+    .map((emotion) => createEmotion(emotion, addCheckedProperty(`emoji-${emotion}` === checkedEmojiItem)))
     .join(``);
 
   return `
     <div class="film-details__new-comment">
-      <div class="film-details__add-emoji-label"></div>
+      <div class="film-details__add-emoji-label">
+        ${hasEmoji ? `<img src="./images/emoji/${emojiIcon}.png" width="55" height="55" alt="emoji-smile">` : ``}
+      </div>
 
       <label class="film-details__comment-label">
         <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -85,7 +87,7 @@ const createFilmDetailsTemplate = (film) => {
     })
     .join(``);
 
-  const filmNewComment = createFilmNewCommentTemplate();
+  const filmNewComment = createFilmNewCommentTemplate(``, false, ``);
 
   return `
     <section class="film-details">

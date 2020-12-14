@@ -14,12 +14,12 @@ export const RenderPosition = {
   AFTEREND: `afterend`
 };
 
-export const emotions = [
-  `smile`,
-  `sleeping`,
-  `puke`,
-  `angry`
-];
+export const Emotions = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`
+};
 
 export const filmControlMap = {
   'watchlist': `Add to watchlist`,
