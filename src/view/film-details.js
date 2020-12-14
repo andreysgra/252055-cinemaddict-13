@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import SmartView from "./smart.js";
 import {Utils, FormatTime} from '../utils';
 import {filmControlMap, Emotions} from '../const';
 
@@ -208,7 +208,7 @@ const createFilmDetailsTemplate = (data, comments) => {
   `;
 };
 
-export default class FilmDetails extends AbstractView {
+export default class FilmDetails extends SmartView {
   constructor(film, comments) {
     super();
     this._data = this._parseFilmToData(film);
@@ -234,6 +234,12 @@ export default class FilmDetails extends AbstractView {
     evt.preventDefault();
 
     const scrollTop = this.getElement().scrollTop;
+
+    this.updateData({
+      emojiIcon: evt.target.value,
+      hasEmoji: !this._data.hasEmoji,
+      checkedEmojiItem: evt.target.id
+    });
 
     this.getElement().scrollTop = scrollTop;
   }
