@@ -1,8 +1,7 @@
 import FilmCardView from '../view/film-card';
 import FilmDetailsView from '../view/film-details';
-import FilmCommentsView from '../view/film-comments';
 import {Utils, Render} from '../utils';
-import {Mode, RenderPosition} from '../const';
+import {Mode} from '../const';
 
 export default class Film {
   constructor(container, changeData, changeMode) {
@@ -14,7 +13,6 @@ export default class Film {
 
     this._filmComponent = null;
     this._filmDetailsComponent = null;
-    this._filmCommentsComponent = null;
     this._mode = Mode.DEFAULT;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
@@ -28,8 +26,6 @@ export default class Film {
   _closeFilmDetails() {
     Render.remove(this._filmDetailsComponent);
     this._filmDetailsComponent = null;
-    this._filmCommentsComponent = null;
-    this._filmNewCommentComponent = null;
 
     document.body.classList.remove(`hide-overflow`);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
@@ -102,11 +98,7 @@ export default class Film {
   }
 
   _renderFilmDetails(film) {
-    this._filmDetailsComponent = new FilmDetailsView(film);
-    this._filmCommentsComponent = new FilmCommentsView(film.comments, this._comments);
-
-    const commentsTitleElement = this._filmDetailsComponent.getElement()
-      .querySelector(`.film-details__comments-title`);
+    this._filmDetailsComponent = new FilmDetailsView(film, this._comments);
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
@@ -119,9 +111,7 @@ export default class Film {
     this._filmDetailsComponent.setWatchedCheckboxClickHandler(this._handleWatchedClick);
     this._filmDetailsComponent.setFavoriteCheckboxClickHandler(this._handleFavoriteClick);
 
-
     Render.render(document.body, this._filmDetailsComponent);
-    Render.render(commentsTitleElement, this._filmCommentsComponent, RenderPosition.AFTEREND);
   }
 
   destroy() {

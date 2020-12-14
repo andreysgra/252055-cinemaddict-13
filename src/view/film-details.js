@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {FormatTime} from '../utils';
+import {Utils, FormatTime} from '../utils';
 import {filmControlMap, Emotions} from '../const';
 
 const addCheckedProperty = (isChecked) => {
@@ -28,6 +28,41 @@ const createEmotion = (emotion, checked) => {
   `;
 };
 
+const createCommentTemplate = (item) => {
+  const {comment, emotion, author, date} = item;
+  const commentDate = FormatTime.fullDateWithTime(date);
+
+  return `
+    <li class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${comment}</p>
+        <p class="film-details__comment-info">
+          <span class="film-details__comment-author">${author}</span>
+          <span class="film-details__comment-day">${commentDate}</span>
+          <button class="film-details__comment-delete">Delete</button>
+        </p>
+      </div>
+    </li>
+  `;
+};
+
+const createFilmCommentsTemplate = (commentIds, comments) => {
+  const commentsList = commentIds
+    .map((commentId) => comments.find((comment) => comment.id === commentId))
+    .sort(Utils.sortCommentsByDate)
+    .map((item) => createCommentTemplate(item))
+    .join(``);
+
+  return `
+    <ul class="film-details__comments-list">
+      ${commentsList}
+    </ul>
+  `;
+};
+
 const createFilmNewCommentTemplate = (emojiIcon, hasEmoji, checkedEmojiItem) => {
   const emotionsList = Object.values(Emotions)
     .map((emotion) => createEmotion(emotion, addCheckedProperty(`emoji-${emotion}` === checkedEmojiItem)))
@@ -50,7 +85,7 @@ const createFilmNewCommentTemplate = (emojiIcon, hasEmoji, checkedEmojiItem) => 
   `;
 };
 
-const createFilmDetailsTemplate = (film) => {
+const createFilmDetailsTemplate = (film, comments) => {
   const {
     filmInfo: {
       title,
@@ -70,7 +105,7 @@ const createFilmDetailsTemplate = (film) => {
       ageRating
     },
     userInfo,
-    comments
+    comments: commentsIds
   } = film;
 
   const releaseDate = FormatTime.fullDateMonthAsString(date);
@@ -79,7 +114,8 @@ const createFilmDetailsTemplate = (film) => {
   const actorsList = actors.join(`, `);
   const genreTitle = genres.length > 1 ? `Genres` : `Genre`;
   const genresList = createGenresTemplate(genres);
-  const commentsCount = comments.length;
+  const commentsCount = commentsIds.length;
+  const filmCommentsTemplate = createFilmCommentsTemplate(commentsIds, comments);
   const userInfoValues = Object.values(userInfo);
   const filmControls = Object.entries(filmControlMap)
     .map((item, index) => {
@@ -160,7 +196,7 @@ const createFilmDetailsTemplate = (film) => {
             <h3 class="film-details__comments-title">
               Comments <span class="film-details__comments-count">${commentsCount}</span>
             </h3>
-
+            ${filmCommentsTemplate}
             ${filmNewComment}
           </section>
         </div>
@@ -170,9 +206,10 @@ const createFilmDetailsTemplate = (film) => {
 };
 
 export default class FilmDetails extends AbstractView {
-  constructor(film) {
+  constructor(film, comments) {
     super();
     this._film = film;
+    this._comments = comments;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchedCheckboxClickHandler = this._watchedCheckboxClickHandler.bind(this);
@@ -199,7 +236,7 @@ export default class FilmDetails extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._film);
+    return createFilmDetailsTemplate(this._film, this._comments);
   }
 
   setCloseButtonClickHandler(handler) {
