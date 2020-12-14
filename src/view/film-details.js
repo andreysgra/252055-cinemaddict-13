@@ -63,7 +63,7 @@ const createFilmCommentsTemplate = (commentIds, comments) => {
   `;
 };
 
-const createFilmNewCommentTemplate = (emojiIcon, hasEmoji, checkedEmojiItem) => {
+const createFilmNewCommentTemplate = (emojiIcon, hasEmoji, checkedEmojiItem, comment) => {
   const emotionsList = Object.values(Emotions)
     .map((emotion) => createEmotion(emotion, addCheckedProperty(`emoji-${emotion}` === checkedEmojiItem)))
     .join(``);
@@ -75,7 +75,7 @@ const createFilmNewCommentTemplate = (emojiIcon, hasEmoji, checkedEmojiItem) => 
       </div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -108,7 +108,8 @@ const createFilmDetailsTemplate = (data, comments) => {
     comments: commentsIds,
     emojiIcon,
     hasEmoji,
-    checkedEmojiItem
+    checkedEmojiItem,
+    comment
   } = data;
 
   const releaseDate = FormatTime.fullDateMonthAsString(date);
@@ -126,7 +127,7 @@ const createFilmDetailsTemplate = (data, comments) => {
     })
     .join(``);
 
-  const filmNewComment = createFilmNewCommentTemplate(emojiIcon, hasEmoji, checkedEmojiItem);
+  const filmNewComment = createFilmNewCommentTemplate(emojiIcon, hasEmoji, checkedEmojiItem, comment);
 
   return `
     <section class="film-details">
@@ -221,8 +222,10 @@ export default class FilmDetails extends SmartView {
     this._favoriteCheckboxClickHandler = this._favoriteCheckboxClickHandler.bind(this);
     this._emojiItemsClickHandler = this._emojiItemsClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._commentTextareaHandler = this._commentTextareaHandler.bind(this);
 
     this._setEmojiItemsChangeHandler(this._emojiItemsClickHandler);
+    this._setCommentTextareaInputHandler(this._commentTextareaHandler);
   }
 
   _closeButtonClickHandler(evt) {
@@ -231,9 +234,13 @@ export default class FilmDetails extends SmartView {
     this._handler.click();
   }
 
-  _emojiItemsClickHandler(evt) {
-    evt.preventDefault();
+  _commentTextareaHandler(evt) {
+    this.updateData({
+      comment: evt.target.value
+    }, true);
+  }
 
+  _emojiItemsClickHandler(evt) {
     const scrollTop = this.getElement().scrollTop;
 
     this.updateData({
@@ -275,9 +282,14 @@ export default class FilmDetails extends SmartView {
       data.checkedEmojiItem = ``;
     }
 
+    if (!data.comment) {
+      data.comment = ``;
+    }
+
     delete data.emojiIcon;
     delete data.hasEmoji;
     delete data.checkedEmojiItem;
+    delete data.comment;
 
     return data;
   }
@@ -289,9 +301,22 @@ export default class FilmDetails extends SmartView {
         {
           emojiIcon: ``,
           hasEmoji: false,
-          checkedEmojiItem: ``
+          checkedEmojiItem: ``,
+          comment: ``
         }
     );
+  }
+
+  _setCommentTextareaInputHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__comment-input`)
+      .addEventListener(`input`, handler);
+  }
+
+  _setEmojiItemsChangeHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__emoji-list`)
+      .addEventListener(`change`, handler);
   }
 
   _watchedCheckboxClickHandler() {
@@ -302,18 +327,13 @@ export default class FilmDetails extends SmartView {
     this._handler.clickWatchlist();
   }
 
-  _setEmojiItemsChangeHandler(handler) {
-    this.getElement()
-      .querySelector(`.film-details__emoji-list`)
-      .addEventListener(`change`, handler);
-  }
-
   getTemplate() {
     return createFilmDetailsTemplate(this._data, this._comments);
   }
 
   restoreHandlers() {
     this._setEmojiItemsChangeHandler(this._emojiItemsClickHandler);
+    this._setCommentTextareaInputHandler(this._commentTextareaHandler);
     this.setCloseButtonClickHandler(this._handler.click);
     this.setFavoriteCheckboxClickHandler(this._handler.clickFavorite);
     this.setFormSubmitHandler(this._handler.formSubmit);
