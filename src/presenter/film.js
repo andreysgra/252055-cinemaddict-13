@@ -1,7 +1,5 @@
 import FilmCardView from '../view/film-card';
 import FilmDetailsView from '../view/film-details';
-import FilmCommentsView from '../view/film-comments';
-import FilmNewCommentView from '../view/film-new-comment';
 import {Utils, Render} from '../utils';
 import {Mode} from '../const';
 
@@ -15,8 +13,6 @@ export default class Film {
 
     this._filmComponent = null;
     this._filmDetailsComponent = null;
-    this._filmCommentsComponent = null;
-    this._filmNewCommentComponent = null;
     this._mode = Mode.DEFAULT;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
@@ -25,18 +21,25 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   _closeFilmDetails() {
     Render.remove(this._filmDetailsComponent);
     this._filmDetailsComponent = null;
-    this._filmCommentsComponent = null;
-    this._filmNewCommentComponent = null;
 
     document.body.classList.remove(`hide-overflow`);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
 
     this._mode = Mode.DEFAULT;
+  }
+
+  _createFilmComponent(film) {
+    this._filmComponent = new FilmCardView(film);
+    this._filmComponent.setClickHandler(this._handleFilmCardClick);
+    this._filmComponent.setWatchlistButtonClickHandler(this._handleWatchlistClick);
+    this._filmComponent.setWatchedButtonClickHandler(this._handleWatchedClick);
+    this._filmComponent.setFavoriteButtonClickHandler(this._handleFavoriteClick);
   }
 
   _escKeyDownHandler(evt) {
@@ -57,6 +60,10 @@ export default class Film {
             }
         )
     );
+  }
+
+  _handleFilmCardClick(film) {
+    this._renderFilmDetails(film);
   }
 
   _handleWatchedClick() {
@@ -91,17 +98,12 @@ export default class Film {
     );
   }
 
-  _handleFilmCardClick(film) {
-    this._renderFilmDetails(film);
+  _handleFormSubmit(film) {
+    this._changeData(film);
   }
 
   _renderFilmDetails(film) {
-    this._filmDetailsComponent = new FilmDetailsView(film);
-    this._filmCommentsComponent = new FilmCommentsView(film.comments, this._comments);
-    this._filmNewCommentComponent = new FilmNewCommentView();
-
-    const filmDetailsCommentsWrapElement = this._filmDetailsComponent.getElement()
-      .querySelector(`.film-details__comments-wrap`);
+    this._filmDetailsComponent = new FilmDetailsView(film, this._comments);
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
@@ -113,11 +115,9 @@ export default class Film {
     this._filmDetailsComponent.setWatchlistCheckboxClickHandler(this._handleWatchlistClick);
     this._filmDetailsComponent.setWatchedCheckboxClickHandler(this._handleWatchedClick);
     this._filmDetailsComponent.setFavoriteCheckboxClickHandler(this._handleFavoriteClick);
-
+    this._filmDetailsComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     Render.render(document.body, this._filmDetailsComponent);
-    Render.render(filmDetailsCommentsWrapElement, this._filmCommentsComponent);
-    Render.render(filmDetailsCommentsWrapElement, this._filmNewCommentComponent);
   }
 
   destroy() {
@@ -130,11 +130,7 @@ export default class Film {
 
     const oldFilmComponent = this._filmComponent;
 
-    this._filmComponent = new FilmCardView(this._film);
-    this._filmComponent.setClickHandler(this._handleFilmCardClick);
-    this._filmComponent.setWatchlistButtonClickHandler(this._handleWatchlistClick);
-    this._filmComponent.setWatchedButtonClickHandler(this._handleWatchedClick);
-    this._filmComponent.setFavoriteButtonClickHandler(this._handleFavoriteClick);
+    this._createFilmComponent(this._film);
 
     if (oldFilmComponent === null) {
       Render.render(this._container, this._filmComponent);

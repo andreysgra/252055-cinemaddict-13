@@ -63,6 +63,8 @@ export default class Films {
 
   _handleFilmChange(updatedFilm) {
     this._films = Utils.updateItem(this._films, updatedFilm);
+    this._sourcedFilms = Utils.updateItem(this._sourcedFilms, updatedFilm);
+
     if (this._filmPresenter.has(updatedFilm.id)) {
       this._filmPresenter.get(updatedFilm.id).init(updatedFilm, this._comments);
     }
@@ -195,6 +197,7 @@ export default class Films {
         break;
       default:
         this._films = this._sourcedFilms.slice();
+        break;
     }
 
     this._currentSortType = sortType;
