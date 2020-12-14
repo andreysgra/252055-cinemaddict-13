@@ -213,6 +213,7 @@ export default class FilmDetails extends SmartView {
     super();
     this._data = this._parseFilmToData(film);
     this._comments = comments;
+    this._handler = {};
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchedCheckboxClickHandler = this._watchedCheckboxClickHandler.bind(this);
@@ -237,8 +238,13 @@ export default class FilmDetails extends SmartView {
 
     this.updateData({
       emojiIcon: evt.target.value,
-      hasEmoji: !this._data.hasEmoji,
-      checkedEmojiItem: evt.target.id
+      hasEmoji: true,
+      checkedEmojiItem: evt.target.id,
+      userInfo: {
+        isWatchlist: this.getElement().querySelector(`#watchlist`).checked,
+        isWatched: this.getElement().querySelector(`#watched`).checked,
+        isFavorite: this.getElement().querySelector(`#favorite`).checked
+      }
     });
 
     this.getElement().scrollTop = scrollTop;
@@ -304,6 +310,15 @@ export default class FilmDetails extends SmartView {
 
   getTemplate() {
     return createFilmDetailsTemplate(this._data, this._comments);
+  }
+
+  restoreHandlers() {
+    this._setEmojiItemsChangeHandler(this._emojiItemsClickHandler);
+    this.setCloseButtonClickHandler(this._handler.click);
+    this.setFavoriteCheckboxClickHandler(this._handler.clickFavorite);
+    this.setFormSubmitHandler(this._handler.formSubmit);
+    this.setWatchedCheckboxClickHandler(this._handler.clickWatched);
+    this.setWatchlistCheckboxClickHandler(this._handler.clickWatchlist);
   }
 
   setCloseButtonClickHandler(handler) {
