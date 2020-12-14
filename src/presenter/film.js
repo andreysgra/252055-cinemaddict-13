@@ -21,6 +21,7 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   _closeFilmDetails() {
@@ -97,6 +98,10 @@ export default class Film {
     );
   }
 
+  _handleFormSubmit(film) {
+    this._changeData(film);
+  }
+
   _renderFilmDetails(film) {
     this._filmDetailsComponent = new FilmDetailsView(film, this._comments);
 
@@ -110,6 +115,7 @@ export default class Film {
     this._filmDetailsComponent.setWatchlistCheckboxClickHandler(this._handleWatchlistClick);
     this._filmDetailsComponent.setWatchedCheckboxClickHandler(this._handleWatchedClick);
     this._filmDetailsComponent.setFavoriteCheckboxClickHandler(this._handleFavoriteClick);
+    this._filmDetailsComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     Render.render(document.body, this._filmDetailsComponent);
   }

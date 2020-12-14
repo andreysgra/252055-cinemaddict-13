@@ -85,7 +85,7 @@ const createFilmNewCommentTemplate = (emojiIcon, hasEmoji, checkedEmojiItem) => 
   `;
 };
 
-const createFilmDetailsTemplate = (film, comments) => {
+const createFilmDetailsTemplate = (data, comments) => {
   const {
     filmInfo: {
       title,
@@ -105,8 +105,11 @@ const createFilmDetailsTemplate = (film, comments) => {
       ageRating
     },
     userInfo,
-    comments: commentsIds
-  } = film;
+    comments: commentsIds,
+    emojiIcon,
+    hasEmoji,
+    checkedEmojiItem
+  } = data;
 
   const releaseDate = FormatTime.fullDateMonthAsString(date);
   const duration = FormatTime.duration(runtime);
@@ -123,7 +126,7 @@ const createFilmDetailsTemplate = (film, comments) => {
     })
     .join(``);
 
-  const filmNewComment = createFilmNewCommentTemplate(``, false, ``);
+  const filmNewComment = createFilmNewCommentTemplate(emojiIcon, hasEmoji, checkedEmojiItem);
 
   return `
     <section class="film-details">
@@ -208,13 +211,17 @@ const createFilmDetailsTemplate = (film, comments) => {
 export default class FilmDetails extends AbstractView {
   constructor(film, comments) {
     super();
-    this._film = film;
+    this._data = this._parseFilmToData(film);
     this._comments = comments;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchedCheckboxClickHandler = this._watchedCheckboxClickHandler.bind(this);
     this._watchlistCheckboxClickHandler = this._watchlistCheckboxClickHandler.bind(this);
     this._favoriteCheckboxClickHandler = this._favoriteCheckboxClickHandler.bind(this);
+    this._emojiItemsClickHandler = this._emojiItemsClickHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+
+    this._setEmojiItemsChangeHandler(this._emojiItemsClickHandler);
   }
 
   _closeButtonClickHandler(evt) {
@@ -223,8 +230,56 @@ export default class FilmDetails extends AbstractView {
     this._handler.click();
   }
 
+  _emojiItemsClickHandler(evt) {
+    evt.preventDefault();
+
+    const scrollTop = this.getElement().scrollTop;
+
+    this.getElement().scrollTop = scrollTop;
+  }
+
   _favoriteCheckboxClickHandler() {
     this._handler.clickFavorite();
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+
+    this._handler.formSubmit(this._parseDataToFilm(this._data));
+  }
+
+  _parseDataToFilm(data) {
+    data = Object.assign({}, data);
+
+    if (!data.hasEmoji) {
+      data.hasEmoji = false;
+    }
+
+    if (!data.emojiIcon) {
+      data.emojiIcon = ``;
+    }
+
+    if (!data.checkedEmojiItem) {
+      data.checkedEmojiItem = ``;
+    }
+
+    delete data.emojiIcon;
+    delete data.hasEmoji;
+    delete data.checkedEmojiItem;
+
+    return data;
+  }
+
+  _parseFilmToData(film) {
+    return Object.assign(
+        {},
+        film,
+        {
+          emojiIcon: ``,
+          hasEmoji: false,
+          checkedEmojiItem: ``
+        }
+    );
   }
 
   _watchedCheckboxClickHandler() {
@@ -235,8 +290,14 @@ export default class FilmDetails extends AbstractView {
     this._handler.clickWatchlist();
   }
 
+  _setEmojiItemsChangeHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__emoji-list`)
+      .addEventListener(`change`, handler);
+  }
+
   getTemplate() {
-    return createFilmDetailsTemplate(this._film, this._comments);
+    return createFilmDetailsTemplate(this._data, this._comments);
   }
 
   setCloseButtonClickHandler(handler) {
@@ -253,6 +314,13 @@ export default class FilmDetails extends AbstractView {
     this.getElement()
       .querySelector(`#favorite`)
       .addEventListener(`click`, this._favoriteCheckboxClickHandler);
+  }
+
+  setFormSubmitHandler(handler) {
+    this._handler.formSubmit = handler;
+    this.getElement()
+      .querySelector(`form`)
+      .addEventListener(`submit`, this._formSubmitHandler);
   }
 
   setWatchedCheckboxClickHandler(handler) {
