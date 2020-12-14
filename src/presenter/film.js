@@ -37,6 +37,14 @@ export default class Film {
     this._mode = Mode.DEFAULT;
   }
 
+  _createFilmComponent(film) {
+    this._filmComponent = new FilmCardView(film);
+    this._filmComponent.setClickHandler(this._handleFilmCardClick);
+    this._filmComponent.setWatchlistButtonClickHandler(this._handleWatchlistClick);
+    this._filmComponent.setWatchedButtonClickHandler(this._handleWatchedClick);
+    this._filmComponent.setFavoriteButtonClickHandler(this._handleFavoriteClick);
+  }
+
   _escKeyDownHandler(evt) {
     Utils.addEscapeEvent(evt, this._closeFilmDetails);
   }
@@ -55,6 +63,10 @@ export default class Film {
             }
         )
     );
+  }
+
+  _handleFilmCardClick(film) {
+    this._renderFilmDetails(film);
   }
 
   _handleWatchedClick() {
@@ -87,10 +99,6 @@ export default class Film {
             }
         )
     );
-  }
-
-  _handleFilmCardClick(film) {
-    this._renderFilmDetails(film);
   }
 
   _renderFilmDetails(film) {
@@ -126,11 +134,7 @@ export default class Film {
 
     const oldFilmComponent = this._filmComponent;
 
-    this._filmComponent = new FilmCardView(this._film);
-    this._filmComponent.setClickHandler(this._handleFilmCardClick);
-    this._filmComponent.setWatchlistButtonClickHandler(this._handleWatchlistClick);
-    this._filmComponent.setWatchedButtonClickHandler(this._handleWatchedClick);
-    this._filmComponent.setFavoriteButtonClickHandler(this._handleFavoriteClick);
+    this._createFilmComponent(this._film);
 
     if (oldFilmComponent === null) {
       Render.render(this._container, this._filmComponent);
