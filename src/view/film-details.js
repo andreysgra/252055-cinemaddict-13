@@ -30,7 +30,7 @@ const createEmotion = (emotion, checked) => {
 
 const createCommentTemplate = (item) => {
   const {comment, emotion, author, date} = item;
-  const commentDate = FormatTime.fullDateWithTime(date);
+  const commentDate = FormatTime.getFullDateWithTime(date);
 
   return `
     <li class="film-details__comment">
@@ -112,8 +112,8 @@ const createFilmDetailsTemplate = (data, comments) => {
     comment
   } = data;
 
-  const releaseDate = FormatTime.fullDateMonthAsString(date);
-  const duration = FormatTime.duration(runtime);
+  const releaseDate = FormatTime.getFullDateMonthAsString(date);
+  const duration = FormatTime.getDuration(runtime);
   const writersList = writers.join(`, `);
   const actorsList = actors.join(`, `);
   const genreTitle = genres.length > 1 ? `Genres` : `Genre`;

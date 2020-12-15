@@ -5,7 +5,7 @@ import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 export default class FormatTime {
-  static duration(runtime) {
+  static getDuration(runtime) {
     const length = dayjs.duration(runtime, `m`);
     const hours = length.hours() ? length.hours() + `h` : ``;
     const minutes = Utils.addLeadZero(length.minutes()) + `m`;
@@ -13,15 +13,15 @@ export default class FormatTime {
     return `${hours} ${minutes}`;
   }
 
-  static fullDateMonthAsString(date) {
+  static getFullDateMonthAsString(date) {
     return dayjs(date).format(`DD MMMM YYYY`);
   }
 
-  static fullDateWithTime(date) {
+  static getFullDateWithTime(date) {
     return dayjs(date).format(`YYYY/MM/DD HH:mm`);
   }
 
-  static fullYear(date) {
+  static getFullYear(date) {
     return dayjs(date).format(`YYYY`);
   }
 }

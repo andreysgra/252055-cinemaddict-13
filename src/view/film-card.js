@@ -27,8 +27,8 @@ const createFilmCardTemplate = (film) => {
     comments
   } = film;
 
-  const year = FormatTime.fullYear(date);
-  const duration = FormatTime.duration(runtime);
+  const year = FormatTime.getFullYear(date);
+  const duration = FormatTime.getDuration(runtime);
   const genre = genres[0];
   const filmDescription = Utils.getShortDescription(description);
   const commentsCount = comments.length;
