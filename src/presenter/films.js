@@ -11,8 +11,9 @@ import {Utils, Render} from '../utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType} from '../const';
 
 export default class Films {
-  constructor(container) {
+  constructor(container, filmsModel) {
     this._container = container;
+    this._filmsModel = filmsModel;
     this._filmPresenter = new Map();
     this._filmTopRatedPresenter = new Map();
     this._filmMostCommentedPresenter = new Map();
@@ -59,6 +60,10 @@ export default class Films {
   _clearFilmsTopRatedList() {
     this._filmTopRatedPresenter.forEach((presenter) => presenter.destroy());
     this._filmTopRatedPresenter.clear();
+  }
+
+  _getFilms() {
+    return this._filmsModel._getFilms();
   }
 
   _handleFilmChange(updatedFilm) {
