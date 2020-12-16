@@ -31,4 +31,4 @@ Render.render(siteMainElement, siteMenu);
 Render.render(siteMenu, new FilmsFilterView(filters), RenderPosition.AFTERBEGIN);
 Render.render(footerStatisticsElement, new FilmsStatisticsView(films.length));
 
-filmsPresenter.init(films, comments);
+filmsPresenter.init(comments);

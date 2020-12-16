@@ -7,6 +7,10 @@ export default class Films extends Observer {
     this._films = [];
   }
 
+  get filmsCount() {
+    return this._films.length;
+  }
+
   getFilms() {
     return this._films;
   }
