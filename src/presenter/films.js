@@ -8,7 +8,7 @@ import ShowMoreButtonView from '../view/show-more-button';
 import NoFilms from '../view/no-films';
 import FilmPresenter from './film';
 import {Utils, Render} from '../utils';
-import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType} from '../const';
+import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType, UpdateType, UserAction} from '../const';
 
 export default class Films {
   constructor(container, filmsModel, commentsModel) {
@@ -37,9 +37,12 @@ export default class Films {
     this._siteHeaderElement = document.querySelector(`.header`);
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
-    this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._filmsModel.addObserver(this._handleModelEvent);
   }
 
   _clearFilmsList() {
@@ -64,10 +67,10 @@ export default class Films {
   _getFilms() {
     switch (this._currentSortType) {
       case SortType.DATE:
-        return this._filmsModel.getFilms().sort(Utils.sortFilmsByDate);
+        return this._filmsModel.getFilms().slice().sort(Utils.sortFilmsByDate);
 
       case SortType.RATING:
-        return this._filmsModel.getFilms().sort(Utils.sortFilmsByRating);
+        return this._filmsModel.getFilms().slice().sort(Utils.sortFilmsByRating);
 
       default:
         return this._filmsModel.getFilms();
@@ -78,26 +81,36 @@ export default class Films {
     return this._commentsModel._getComments();
   }
 
-  _handleFilmChange(updatedFilm) {
-    // Здесь будем вызывать обновление модели
-
-    if (this._filmPresenter.has(updatedFilm.id)) {
-      this._filmPresenter.get(updatedFilm.id).init(updatedFilm, this._comments);
-    }
-
-    if (this._filmTopRatedPresenter.has(updatedFilm.id)) {
-      this._filmTopRatedPresenter.get(updatedFilm.id).init(updatedFilm, this._comments);
-    }
-
-    if (this._filmMostCommentedPresenter.has(updatedFilm.id)) {
-      this._filmMostCommentedPresenter.get(updatedFilm.id).init(updatedFilm, this._comments);
-    }
-  }
-
   _handleModeChange() {
     this._filmPresenter.forEach((presenter) => presenter.resetView());
     this._filmTopRatedPresenter.forEach((presenter) => presenter.resetView());
     this._filmMostCommentedPresenter.forEach((presenter) => presenter.resetView());
+  }
+
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        if (this._filmPresenter.has(data.id)) {
+          this._filmPresenter.get(data.id).init(data, this._comments);
+        }
+
+        if (this._filmTopRatedPresenter.has(data.id)) {
+          this._filmTopRatedPresenter.get(data.id).init(data, this._comments);
+        }
+
+        if (this._filmMostCommentedPresenter.has(data.id)) {
+          this._filmMostCommentedPresenter.get(data.id).init(data, this._comments);
+        }
+        break;
+
+      case UpdateType.MINOR:
+        // - обновить список
+        break;
+
+      case UpdateType.MAJOR:
+        // - обновить всю доску
+        break;
+    }
   }
 
   _handleShowMoreButtonClick() {
@@ -123,6 +136,22 @@ export default class Films {
     this._renderFilmsList();
   }
 
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this._filmsModel.updateFilm(updateType, update);
+        break;
+
+      case UserAction.ADD_COMMENT:
+        this._commentsModel.addComment(updateType, update);
+        break;
+
+      case UserAction.DELETE_COMMENT:
+        this._commentsModel.deleteComment(updateType, update);
+        break;
+    }
+  }
+
   _renderExtraFilms(filmsList, presenter, filmsListTitle) {
     if (filmsList.length > 0) {
       const filmsListExtraComponent = new FilmsListExtraView(filmsListTitle);
@@ -138,7 +167,7 @@ export default class Films {
   }
 
   _renderFilm(container, presenter, film) {
-    const filmPresenter = new FilmPresenter(container, this._handleFilmChange, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange);
 
     filmPresenter.init(film, this._comments);
     presenter.set(film.id, filmPresenter);
