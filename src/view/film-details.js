@@ -50,9 +50,9 @@ const createCommentTemplate = (item) => {
   `;
 };
 
-const createFilmCommentsTemplate = (commentIds, comments) => {
-  const commentsList = commentIds
-    .map((commentId) => comments.find((comment) => comment.id === commentId))
+const createFilmCommentsTemplate = (comments) => {
+  const commentsList = comments
+    .slice()
     .sort(Utils.sortCommentsByDate)
     .map((item) => createCommentTemplate(item))
     .join(``);
@@ -106,7 +106,6 @@ const createFilmDetailsTemplate = (data, comments) => {
       ageRating
     },
     userInfo,
-    comments: commentsIds,
     emojiIcon,
     hasEmoji,
     checkedEmojiItem,
@@ -119,8 +118,8 @@ const createFilmDetailsTemplate = (data, comments) => {
   const actorsList = actors.join(`, `);
   const genreTitle = genres.length > 1 ? `Genres` : `Genre`;
   const genresList = createGenresTemplate(genres);
-  const commentsCount = commentsIds.length;
-  const filmCommentsTemplate = createFilmCommentsTemplate(commentsIds, comments);
+  const commentsCount = comments.length;
+  const filmCommentsTemplate = createFilmCommentsTemplate(comments);
   const userInfoValues = Object.values(userInfo);
   const filmControls = Object.entries(filmControlMap)
     .map((item, index) => {

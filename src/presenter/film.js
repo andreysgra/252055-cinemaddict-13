@@ -109,7 +109,7 @@ export default class Film {
   // }
 
   _renderFilmDetails(film) {
-    this._filmDetailsComponent = new FilmDetailsView(film, this._commentsModel.getComments());
+    this._filmDetailsComponent = new FilmDetailsView(film, this._commentsModel.getComments(film.id));
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);

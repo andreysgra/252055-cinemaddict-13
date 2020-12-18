@@ -10,8 +10,8 @@ import {generateComments} from './mock/comments';
 import {generateFilters} from './mock/filter';
 import FilmsPresenter from './presenter/films';
 
-const films = generateFilms();
 const comments = generateComments();
+const films = generateFilms(comments);
 const filters = generateFilters(films);
 
 const filmsModel = new FilmsModel();

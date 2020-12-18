@@ -31,8 +31,8 @@ export default class Comments extends Observer {
     this._notify(updateType);
   }
 
-  getComments() {
-    return this._comments;
+  getComments(filmId) {
+    return this._comments[filmId];
   }
 
   setComments(comments) {
