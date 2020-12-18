@@ -30,10 +30,7 @@ export default class Films {
     this._filmsListComponent = new FilmsListView();
     this._filmsListContainerComponent = new FilmsListContainerView();
     this._noFilmsComponent = new NoFilms();
-    this._filmDetailsComponent = null;
-    this._filmCommentsComponent = null;
-    this._filmNewCommentComponent = null;
-    this._showMoreButtonComponent = new ShowMoreButtonView();
+    this._showMoreButtonComponent = null;
     this._siteHeaderElement = document.querySelector(`.header`);
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
@@ -45,13 +42,33 @@ export default class Films {
     this._filmsModel.addObserver(this._handleModelEvent);
   }
 
-  _clearFilmsList() {
+  _clearFilmsBoard({resetRenderedFilmCount = false, resetSortType = false} = {}) {
+    this._clearFilmsList({resetRenderedFilmCount, resetSortType});
+    this._clearFilmsMostCommentedList();
+    this._clearFilmsTopRatedList();
+
+    Render.remove(this._userProfileComponent);
+    Render.remove(this._noFilmsComponent);
+  }
+
+  _clearFilmsList({resetRenderedFilmCount = false, resetSortType = false} = {}) {
     this._filmPresenter.forEach((presenter) => presenter.destroy());
     this._filmPresenter.clear();
 
-    this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
+    const filmsCount = this._filmsModel.filmsCount;
 
+    Render.remove(this._sortingListComponent);
     Render.remove(this._showMoreButtonComponent);
+
+    if (resetRenderedFilmCount) {
+      this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
+    } else {
+      this._renderedFilmsCount = Math.min(filmsCount, this._renderedFilmsCount);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
   }
 
   _clearFilmsMostCommentedList() {
@@ -104,11 +121,13 @@ export default class Films {
         break;
 
       case UpdateType.MINOR:
-        // - обновить список
+        this._clearFilmsList();
+        this._renderFilmsList();
         break;
 
       case UpdateType.MAJOR:
-        // - обновить всю доску
+        this._clearFilmsBoard({resetRenderedFilmCount: true, resetSortType: true});
+        this._renderFilmsBoard();
         break;
     }
   }
@@ -132,7 +151,7 @@ export default class Films {
     }
 
     this._currentSortType = sortType;
-    this._clearFilmsList();
+    this._clearFilmsList({resetRenderedFilmCount: true});
     this._renderFilmsList();
   }
 
@@ -154,6 +173,7 @@ export default class Films {
 
   _renderExtraFilms(filmsList, presenter, filmsListTitle) {
     if (filmsList.length > 0) {
+
       const filmsListExtraComponent = new FilmsListExtraView(filmsListTitle);
       const filmsListContainerComponent = new FilmsListContainerView();
 
@@ -173,7 +193,7 @@ export default class Films {
     presenter.set(film.id, filmPresenter);
   }
 
-  _renderFilmBoard() {
+  _renderFilmsBoard() {
     if (this._filmsModel.filmsCount === 0) {
       this._renderNoFilms();
 
@@ -181,7 +201,6 @@ export default class Films {
     }
 
     this._renderUserProfile();
-    this._renderSortingList();
     this._renderFilmsListSection();
     this._renderFilmsListContainer();
     this._renderFilmsList();
@@ -195,13 +214,15 @@ export default class Films {
 
   _renderFilmsList() {
     const filmsCount = this._filmsModel.filmsCount;
-    const films = this._getFilms().slice(0, Math.min(filmsCount, FILMS_COUNT_PER_STEP));
+    const films = this._getFilms().slice(0, Math.min(filmsCount, this._renderedFilmsCount));
 
     this._renderFilms(films);
 
-    if (filmsCount > FILMS_COUNT_PER_STEP) {
+    if (filmsCount > this._renderedFilmsCount) {
       this._renderShowMoreButton();
     }
+
+    this._renderSortingList();
   }
 
   _renderFilmsListSection() {
@@ -218,7 +239,6 @@ export default class Films {
 
   _renderSortingList() {
     if (this._sortingListComponent !== null) {
-      Render.remove(this._sortingListComponent);
       this._sortingListComponent = null;
     }
 
@@ -229,8 +249,14 @@ export default class Films {
   }
 
   _renderShowMoreButton() {
-    Render.render(this._filmsListComponent, this._showMoreButtonComponent);
+    if (this._showMoreButtonComponent !== null) {
+      this._showMoreButtonComponent = null;
+    }
+
+    this._showMoreButtonComponent = new ShowMoreButtonView();
+
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
+    Render.render(this._filmsListComponent, this._showMoreButtonComponent);
   }
 
   _renderUserProfile() {
@@ -252,6 +278,6 @@ export default class Films {
       .slice(0, FILMS_EXTRA_COUNT);
 
     Render.render(this._container, this._filmsComponent);
-    this._renderFilmBoard();
+    this._renderFilmsBoard();
   }
 }

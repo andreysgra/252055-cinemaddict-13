@@ -29,6 +29,6 @@ const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsM
 
 Render.render(siteMainElement, siteMenu);
 Render.render(siteMenu, new FilmsFilterView(filters), RenderPosition.AFTERBEGIN);
-Render.render(footerStatisticsElement, new FilmsStatisticsView(films.length));
+Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
 
 filmsPresenter.init(comments);
