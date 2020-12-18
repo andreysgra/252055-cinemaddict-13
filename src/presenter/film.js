@@ -4,12 +4,12 @@ import {Utils, Render} from '../utils';
 import {Mode, UserAction, UpdateType} from '../const';
 
 export default class Film {
-  constructor(container, changeData, changeMode) {
+  constructor(container, changeData, changeMode, commentsModel) {
     this._container = container;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._commentsModel = commentsModel;
     this._film = {};
-    this._comments = [];
 
     this._filmComponent = null;
     this._filmDetailsComponent = null;
@@ -109,7 +109,7 @@ export default class Film {
   // }
 
   _renderFilmDetails(film) {
-    this._filmDetailsComponent = new FilmDetailsView(film, this._comments);
+    this._filmDetailsComponent = new FilmDetailsView(film, this._commentsModel.getComments());
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
@@ -130,9 +130,8 @@ export default class Film {
     Render.remove(this._filmComponent);
   }
 
-  init(film, comments) {
+  init(film) {
     this._film = film;
-    this._comments = comments;
 
     const oldFilmComponent = this._filmComponent;
 

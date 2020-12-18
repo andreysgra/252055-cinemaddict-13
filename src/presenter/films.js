@@ -18,7 +18,6 @@ export default class Films {
     this._filmPresenter = new Map();
     this._filmTopRatedPresenter = new Map();
     this._filmMostCommentedPresenter = new Map();
-    this._comments = [];
     this._topRatedFilms = [];
     this._mostCommentedFilms = [];
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
@@ -108,15 +107,15 @@ export default class Films {
     switch (updateType) {
       case UpdateType.PATCH:
         if (this._filmPresenter.has(data.id)) {
-          this._filmPresenter.get(data.id).init(data, this._comments);
+          this._filmPresenter.get(data.id).init(data);
         }
 
         if (this._filmTopRatedPresenter.has(data.id)) {
-          this._filmTopRatedPresenter.get(data.id).init(data, this._comments);
+          this._filmTopRatedPresenter.get(data.id).init(data);
         }
 
         if (this._filmMostCommentedPresenter.has(data.id)) {
-          this._filmMostCommentedPresenter.get(data.id).init(data, this._comments);
+          this._filmMostCommentedPresenter.get(data.id).init(data);
         }
         break;
 
@@ -187,9 +186,9 @@ export default class Films {
   }
 
   _renderFilm(container, presenter, film) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel);
 
-    filmPresenter.init(film, this._comments);
+    filmPresenter.init(film);
     presenter.set(film.id, filmPresenter);
   }
 
@@ -264,9 +263,7 @@ export default class Films {
     Render.render(this._siteHeaderElement, this._userProfileComponent);
   }
 
-  init(comments) {
-    this._comments = comments.slice();
-
+  init() {
     this._topRatedFilms = this._filmsModel.getFilms()
       .filter((film) => film.filmInfo.totalRating > 0)
       .sort(Utils.sortFilmsByRating)
