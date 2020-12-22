@@ -29,7 +29,7 @@ const createEmotion = (emotion, checked) => {
 };
 
 const createCommentTemplate = (item) => {
-  const {comment, emotion, author, date} = item;
+  const {id, comment, emotion, author, date} = item;
   const commentDate = FormatTime.getFullDateWithTime(date);
   const commentDateHumanize = FormatTime.getHumanizeDate(date);
 
@@ -43,7 +43,7 @@ const createCommentTemplate = (item) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day" title="${commentDate}">${commentDateHumanize}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" data-id="${id}">Delete</button>
         </p>
       </div>
     </li>
@@ -223,6 +223,7 @@ export default class FilmDetails extends SmartView {
     this._emojiItemsClickHandler = this._emojiItemsClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._commentTextareaHandler = this._commentTextareaHandler.bind(this);
+    this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
 
     this._setEmojiItemsChangeHandler(this._emojiItemsClickHandler);
     this._setCommentTextareaInputHandler(this._commentTextareaHandler);
@@ -238,6 +239,14 @@ export default class FilmDetails extends SmartView {
     this.updateData({
       comment: evt.target.value
     }, true);
+  }
+
+  _deleteButtonClickHandler(evt) {
+    evt.preventDefault();
+
+    const filmId = evt.target.dataset.id;
+
+    this._handler.clickDelete(filmId);
   }
 
   _emojiItemsClickHandler(evt) {
@@ -339,6 +348,7 @@ export default class FilmDetails extends SmartView {
     this.setFormSubmitHandler(this._handler.formSubmit);
     this.setWatchedCheckboxClickHandler(this._handler.clickWatched);
     this.setWatchlistCheckboxClickHandler(this._handler.clickWatchlist);
+    this.setDeleteButtonClickHandler(this._handler.clickDelete);
   }
 
   setCloseButtonClickHandler(handler) {
@@ -347,6 +357,14 @@ export default class FilmDetails extends SmartView {
     this.getElement()
       .querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, this._closeButtonClickHandler);
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this._handler.clickDelete = handler;
+
+    this.getElement()
+      .querySelectorAll(`.film-details__comment-delete`)
+      .forEach((item) => item.addEventListener(`click`, this._deleteButtonClickHandler));
   }
 
   setFavoriteCheckboxClickHandler(handler) {
@@ -378,5 +396,14 @@ export default class FilmDetails extends SmartView {
     this.getElement()
       .querySelector(`#watchlist`)
       .addEventListener(`click`, this._watchlistCheckboxClickHandler);
+  }
+
+  update(comments) {
+    this._comments = comments.slice();
+
+    const scrollTop = this.getElement().scrollTop;
+    this.updateElement();
+
+    this.getElement().scrollTop = scrollTop;
   }
 }

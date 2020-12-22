@@ -21,12 +21,15 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
-    // this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
+
+    this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
   _closeFilmDetails() {
+    this._commentsModel.removeObserver(this._handleModelEvent);
+
     Render.remove(this._filmDetailsComponent);
-    this._filmDetailsComponent = null;
 
     document.body.classList.remove(`hide-overflow`);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
@@ -44,6 +47,31 @@ export default class Film {
 
   _escKeyDownHandler(evt) {
     Utils.addEscapeEvent(evt, this._closeFilmDetails);
+  }
+
+  _handleDeleteCommentClick(id) {
+    const currentComments = this._commentsModel.getComments(this._film.id).slice();
+    const remainingComments = currentComments.filter((comment) => comment.id !== parseInt(id, 10));
+
+    this._changeData(
+        UserAction.DELETE_COMMENT,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._film,
+            {
+              comments: remainingComments
+            }
+        )
+    );
+
+    this._commentsModel.deleteComment(
+        UpdateType.MINOR,
+        {
+          id: this._film.id,
+          idDeleted: parseInt(id, 10)
+        }
+    );
   }
 
   _handleFavoriteClick() {
@@ -66,6 +94,14 @@ export default class Film {
 
   _handleFilmCardClick(film) {
     this._renderFilmDetails(film);
+  }
+
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.MINOR:
+        this._filmDetailsComponent.update(this._commentsModel.getComments(data.id));
+        break;
+    }
   }
 
   _handleWatchedClick() {
@@ -104,24 +140,22 @@ export default class Film {
     );
   }
 
-  // _handleFormSubmit(film) {
-  //   this._changeData(film);
-  // }
-
   _renderFilmDetails(film) {
+    this._changeMode();
+    this._mode = Mode.EDITING;
+
+    this._commentsModel.addObserver(this._handleModelEvent);
+
     this._filmDetailsComponent = new FilmDetailsView(film, this._commentsModel.getComments(film.id));
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
 
-    this._changeMode();
-    this._mode = Mode.EDITING;
-
     this._filmDetailsComponent.setCloseButtonClickHandler(this._closeFilmDetails);
     this._filmDetailsComponent.setWatchlistCheckboxClickHandler(this._handleWatchlistClick);
     this._filmDetailsComponent.setWatchedCheckboxClickHandler(this._handleWatchedClick);
     this._filmDetailsComponent.setFavoriteCheckboxClickHandler(this._handleFavoriteClick);
-    // this._filmDetailsComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._filmDetailsComponent.setDeleteButtonClickHandler(this._handleDeleteCommentClick);
 
     Render.render(document.body, this._filmDetailsComponent);
   }
