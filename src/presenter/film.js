@@ -22,6 +22,7 @@ export default class Film {
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
+    this._handleAddCommentClick = this._handleAddCommentClick.bind(this);
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
   }
@@ -47,6 +48,37 @@ export default class Film {
 
   _escKeyDownHandler(evt) {
     Utils.addEscapeEvent(evt, this._closeFilmDetails);
+  }
+
+  _handleAddCommentClick(comment) {
+    const comments = this._commentsModel.getComments(this._film.id);
+    let commentId = 1000;
+
+    if (comments.length > 0) {
+      commentId = Math.max(...comments.map((item) => item.id)) + 1;
+    }
+
+    comment.id = commentId;
+
+    this._changeData(
+        UserAction.ADD_COMMENT,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._film,
+            {
+              comments: [...comments, commentId]
+            }
+        )
+    );
+
+    this._commentsModel.addComment(
+        UpdateType.MINOR,
+        {
+          id: this._film.id,
+          comment
+        }
+    );
   }
 
   _handleDeleteCommentClick(id) {
@@ -156,6 +188,7 @@ export default class Film {
     this._filmDetailsComponent.setWatchedCheckboxClickHandler(this._handleWatchedClick);
     this._filmDetailsComponent.setFavoriteCheckboxClickHandler(this._handleFavoriteClick);
     this._filmDetailsComponent.setDeleteButtonClickHandler(this._handleDeleteCommentClick);
+    this._filmDetailsComponent.setFormKeydownHandler(this._handleAddCommentClick);
 
     Render.render(document.body, this._filmDetailsComponent);
   }

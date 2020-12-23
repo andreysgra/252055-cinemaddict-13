@@ -8,9 +8,9 @@ export default class Comments extends Observer {
   }
 
   addComment(updateType, update) {
-    this._comments = [
-      update,
-      ...this._comments
+    this._comments[update.id] = [
+      update.comment,
+      ...this._comments[update.id]
     ];
 
     this._notify(updateType, update);
@@ -21,7 +21,7 @@ export default class Comments extends Observer {
       .findIndex((comment) => comment.id === update.idDeleted);
 
     if (index === -1) {
-      throw new Error(`Can't delete nonexistent film`);
+      throw new Error(`Can't delete nonexistent comment`);
     }
 
     this._comments[update.id] = [

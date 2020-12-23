@@ -172,7 +172,6 @@ export default class Films {
 
       case UserAction.ADD_COMMENT:
         this._filmsModel.updateFilm(updateType, update);
-        this._commentsModel.addComment(updateType, update);
         break;
 
       case UserAction.DELETE_COMMENT:
