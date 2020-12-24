@@ -7,15 +7,16 @@ import FilmsListExtraView from '../view/films-list-extra';
 import ShowMoreButtonView from '../view/show-more-button';
 import NoFilms from '../view/no-films';
 import FilmPresenter from './film';
-import {Utils, Render} from '../utils';
+import {Utils, Render, Filters} from '../utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType, UpdateType, UserAction} from '../const';
 
 export default class Films {
-  constructor(container, filmsModel, commentsModel) {
+  constructor(container, filmsModel, commentsModel, filterModel) {
     this._container = container;
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
+    this._filterModel = filterModel;
 
     this._filmPresenter = new Map();
     this._filmTopRatedPresenter = new Map();
@@ -42,6 +43,7 @@ export default class Films {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   _clearFilmsBoard({resetRenderedFilmCount = false, resetSortType = false} = {}) {
@@ -92,15 +94,19 @@ export default class Films {
   }
 
   _getFilms() {
+    const filterType = this._filterModel.getFilter();
+    const films = this._filmsModel.getFilms();
+    const filteredFilms = Filters.getFilter(films, filterType);
+
     switch (this._currentSortType) {
       case SortType.DATE:
-        return this._filmsModel.getFilms().slice().sort(Utils.sortFilmsByDate);
+        return filteredFilms.sort(Utils.sortFilmsByDate);
 
       case SortType.RATING:
-        return this._filmsModel.getFilms().slice().sort(Utils.sortFilmsByRating);
+        return filteredFilms.sort(Utils.sortFilmsByRating);
 
       default:
-        return this._filmsModel.getFilms();
+        return filteredFilms;
     }
   }
 
@@ -127,8 +133,10 @@ export default class Films {
         break;
 
       case UpdateType.MINOR:
+        Render.remove(this._userProfileComponent);
         this._clearFilmsList();
         this._clearExtraFilmsList();
+        this._renderUserProfile();
         this._renderFilmsList();
         this._renderFilmsTopRated();
         this._renderFilmsMostCommented();
