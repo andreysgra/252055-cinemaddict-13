@@ -1,6 +1,7 @@
 import SmartView from "./smart.js";
 import {Utils, FormatTime} from '../utils';
 import {filmControlMap, Emotions} from '../const';
+import he from "he";
 
 const addCheckedProperty = (isChecked) => {
   return isChecked ? `checked` : ``;
@@ -39,7 +40,7 @@ const createCommentTemplate = (item) => {
         <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
       </span>
       <div>
-        <p class="film-details__comment-text">${comment}</p>
+        <p class="film-details__comment-text">${he.encode(comment)}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day" title="${commentDate}">${commentDateHumanize}</span>
