@@ -288,37 +288,18 @@ export default class FilmDetails extends SmartView {
     }
   }
 
-  _parseDataToFilm(data) {
-    data = Object.assign({}, data);
-
-    if (!data.hasEmoji) {
-      data.hasEmoji = false;
-    }
-
-    if (!data.emojiIcon) {
-      data.emojiIcon = ``;
-    }
-
-    if (!data.checkedEmojiItem) {
-      data.checkedEmojiItem = ``;
-    }
-
-    if (!data.comment) {
-      data.comment = ``;
-    }
-
-    delete data.emojiIcon;
-    delete data.hasEmoji;
-    delete data.checkedEmojiItem;
-    delete data.comment;
-
-    return data;
-  }
-
   _parseFilmToData(film) {
     return Object.assign(
         {},
         film,
+        this._resetExtraData(this._data)
+    );
+  }
+
+  _resetExtraData(data) {
+    return Object.assign(
+        {},
+        data,
         {
           emojiIcon: ``,
           hasEmoji: false,
@@ -412,9 +393,10 @@ export default class FilmDetails extends SmartView {
   }
 
   update(comments) {
-    this._comments = comments.slice();
-
     const scrollTop = this.getElement().scrollTop;
+
+    this._comments = comments.slice();
+    this._data = this._resetExtraData(this._data);
     this.updateElement();
 
     this.getElement().scrollTop = scrollTop;
