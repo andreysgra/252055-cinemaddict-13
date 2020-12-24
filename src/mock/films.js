@@ -53,26 +53,21 @@ const generateTotalRating = () => {
   return (Utils.getRandomInteger(MIN_RATING, MAX_RATING) + Math.random()).toFixed(1);
 };
 
-const generateComments = () => {
-  const commentId = Utils.setCounter(1000);
-  const MIN_COMMENTS = 0;
-  const MAX_COMMENTS = 5;
-
-  const items = [...Array(consts.COMMENTS_COUNT)].map(commentId);
-
-  return Utils.generateItems(items, MIN_COMMENTS, MAX_COMMENTS);
+const getFilmCommentsId = (id, comments) => {
+  return comments[id].map((item) => item.id);
 };
 
 const filmId = Utils.setCounter();
 
-const generateFilm = () => {
+const generateFilm = (comments) => {
   const MIN_RUNTIME = 30;
   const MAX_RUNTIME = 180;
   const MIN_AGE = 3;
   const MAX_AGE = 21;
+  const id = filmId();
 
   return {
-    id: filmId(),
+    id,
     filmInfo: {
       title: Utils.getRandomItem(consts.filmTitles),
       originalTitle: Utils.getRandomItem(consts.filmOriginalTitles),
@@ -95,10 +90,10 @@ const generateFilm = () => {
       isWatched: Utils.getRandomBool(),
       isFavorite: Utils.getRandomBool()
     },
-    comments: generateComments()
+    comments: getFilmCommentsId(id, comments)
   };
 };
 
-export const generateFilms = () => {
-  return [...Array(consts.FILMS_COUNT)].map(generateFilm);
+export const generateFilms = (comments) => {
+  return [...Array(consts.FILMS_COUNT)].map(() => generateFilm(comments));
 };

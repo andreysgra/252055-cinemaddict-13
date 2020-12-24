@@ -1,6 +1,4 @@
-export const FILMS_COUNT = 20;
-
-export const COMMENTS_COUNT = 30;
+export const FILMS_COUNT = 5;
 
 export const sentences = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,

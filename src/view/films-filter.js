@@ -1,27 +1,24 @@
 import AbstractView from './abstract';
-import {Utils} from '../utils';
 
-const createFilterItemTemplate = ({name, count}, isActive) => {
-  const filterName = name !== `all`
-    ? `${Utils.toUpperCaseFirstLetter(name)}`
-    : `${Utils.toUpperCaseFirstLetter(name)} movies`;
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
 
-  const filterCount = name !== `all`
+  const filterCount = type !== `all`
     ? `<span class="main-navigation__item-count">${count}</span>`
     : ``;
 
-  const activeFilterClassName = isActive
+  const activeFilterClassName = type === currentFilterType
     ? `main-navigation__item--active`
     : ``;
 
   return `
-    <a href="#${name}" class="main-navigation__item ${activeFilterClassName}">${filterName} ${filterCount}</a>
+    <a href="#${type}" class="main-navigation__item ${activeFilterClassName}" data-filter="${type}">${name} ${filterCount}</a>
   `;
 };
 
-const createFilmsFilterTemplate = (filters) => {
+const createFilmsFilterTemplate = (filters, currentFilterType) => {
   const filterItemsTemplate = filters
-    .map((filter, index) => createFilterItemTemplate(filter, index === 0))
+    .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join(``);
 
   return `
@@ -32,12 +29,29 @@ const createFilmsFilterTemplate = (filters) => {
 };
 
 export default class FilmsFilter extends AbstractView {
-  constructor(filters) {
+  constructor(filters, currentFilterType) {
     super();
+
     this._filters = filters;
+    this._currentFilter = currentFilterType;
+
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+  }
+
+  _filterTypeChangeHandler(evt) {
+    evt.preventDefault();
+
+    this._handler.filterTypeChange(evt.target.dataset.filter);
   }
 
   getTemplate() {
-    return createFilmsFilterTemplate(this._filters);
+    return createFilmsFilterTemplate(this._filters, this._currentFilter);
+  }
+
+  setFilterTypeChangeHandler(handler) {
+    this._handler.filterTypeChange = handler;
+
+    this.getElement()
+      .addEventListener(`click`, this._filterTypeChangeHandler);
   }
 }

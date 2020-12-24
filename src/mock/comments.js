@@ -30,6 +30,14 @@ const generateComment = () => {
   };
 };
 
+const generateFilmComments = () => {
+  const MIN_COMMENTS_COUNT = 0;
+  const MAX_COMMENTS_COUNT = 5;
+  const COMMENTS_COUNT = Utils.getRandomInteger(MIN_COMMENTS_COUNT, MAX_COMMENTS_COUNT);
+
+  return [...Array(COMMENTS_COUNT)].map(generateComment);
+};
+
 export const generateComments = () => {
-  return [...Array(consts.COMMENTS_COUNT)].map(generateComment);
+  return [...Array(consts.FILMS_COUNT)].map(generateFilmComments);
 };
