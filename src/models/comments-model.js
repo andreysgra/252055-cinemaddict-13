@@ -1,6 +1,6 @@
 import {Observer} from '../utils';
 
-export default class Comments extends Observer {
+export default class CommentsModel extends Observer {
   constructor() {
     super();
 

@@ -1,6 +1,6 @@
 import {Observer} from '../utils';
 
-export default class Films extends Observer {
+export default class FilmsModel extends Observer {
   constructor() {
     super();
 
