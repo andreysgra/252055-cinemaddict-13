@@ -6,7 +6,7 @@ import FilmsListContainerView from '../view/films-list-container';
 import FilmsListExtraView from '../view/films-list-extra';
 import ShowMoreButtonView from '../view/show-more-button';
 import NoFilms from '../view/no-films';
-import {Utils, Render, Filters} from '../utils';
+import {Utils, Render, Filter} from '../utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType, UpdateType, UserAction} from '../const';
 
 import FilmCardView from '../view/film-card';
@@ -109,7 +109,7 @@ export default class FilmsPresenter {
   _getFilms() {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
-    const filteredFilms = Filters.getFilter(films, filterType);
+    const filteredFilms = Filter.getFilter(films, filterType);
 
     switch (this._currentSortType) {
       case SortType.DATE:
