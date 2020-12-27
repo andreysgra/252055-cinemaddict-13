@@ -97,6 +97,7 @@ export default class Films {
   }
 
   _closeFilmDetails() {
+    this._filmId = undefined;
     this._commentsModel.removeObserver(this._handleModelEvent);
 
     Render.remove(this._filmDetailsComponent);
@@ -219,7 +220,7 @@ export default class Films {
         this._renderFilmsTopRated();
         this._renderFilmsMostCommented();
 
-        if (this._filmDetailsComponent !== null) {
+        if (this._filmId === data.id) {
           this._filmDetailsComponent.update(
               this._filmsModel.getFilm(data.id),
               this._commentsModel.getComments(data.id)
@@ -336,11 +337,13 @@ export default class Films {
       this._filmDetailsComponent = null;
     }
 
-    const film = this._filmsModel.getFilm(filmId);
-
+    this._filmId = filmId;
     this._commentsModel.addObserver(this._handleModelEvent);
 
-    this._filmDetailsComponent = new FilmDetailsView(film, this._commentsModel.getComments(filmId));
+    this._filmDetailsComponent = new FilmDetailsView(
+        this._filmsModel.getFilm(this._filmId),
+        this._commentsModel.getComments(this._filmId)
+    );
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
@@ -354,6 +357,7 @@ export default class Films {
 
     Render.render(document.body, this._filmDetailsComponent);
   }
+
   _renderFilmsBoard() {
     if (this._filmsModel.filmsCount === 0) {
       this._renderNoFilms();
