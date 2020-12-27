@@ -64,7 +64,7 @@ const generateFilm = (comments) => {
   const MAX_RUNTIME = 180;
   const MIN_AGE = 3;
   const MAX_AGE = 21;
-  const id = filmId();
+  const id = filmId().toString();
 
   return {
     id,

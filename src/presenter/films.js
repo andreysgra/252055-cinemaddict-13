@@ -162,7 +162,6 @@ export default class Films {
     const film = this._filmsModel.getFilm(filmId);
 
     const currentComments = this._commentsModel.getComments(filmId).slice();
-    const remainingComments = currentComments.filter((comment) => comment.id !== parseInt(commentId, 10));
 
     this._handleViewAction(
         UserAction.DELETE_COMMENT,
@@ -171,7 +170,7 @@ export default class Films {
             {},
             film,
             {
-              comments: remainingComments
+              comments: currentComments.filter((comment) => comment.id !== commentId)
             }
         )
     );
@@ -180,7 +179,7 @@ export default class Films {
         UpdateType.MINOR,
         {
           id: film.id,
-          idDeleted: parseInt(commentId, 10)
+          idDeleted: commentId
         }
     );
   }

@@ -22,7 +22,7 @@ const generateComment = () => {
   const MAX_YEAR = 3;
 
   return {
-    id: commentId(),
+    id: commentId().toString(),
     comment: generateCommentText(consts.sentences),
     emotion: Utils.getRandomItem(consts.emotions),
     author: Utils.getRandomItem(consts.filmActors),
