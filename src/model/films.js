@@ -11,6 +11,10 @@ export default class Films extends Observer {
     return this._films.length;
   }
 
+  getFilm(id) {
+    return this._films[id];
+  }
+
   getFilms() {
     return this._films;
   }

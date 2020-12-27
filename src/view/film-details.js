@@ -247,7 +247,7 @@ export default class FilmDetails extends SmartView {
 
     const commentId = evt.target.dataset.id;
 
-    this._handler.clickDelete(commentId);
+    this._handler.clickDelete(this._data.id, commentId);
   }
 
   _emojiItemsClickHandler(evt) {
@@ -268,7 +268,7 @@ export default class FilmDetails extends SmartView {
   }
 
   _favoriteCheckboxClickHandler() {
-    this._handler.clickFavorite();
+    this._handler.clickFavorite(this._data.id);
   }
 
   _formKeydownHandler(evt) {
@@ -284,7 +284,7 @@ export default class FilmDetails extends SmartView {
         date: new Date()
       };
 
-      this._handler.formKeydown(newComment);
+      this._handler.formKeydown(this._data.id, newComment);
     }
   }
 
@@ -292,7 +292,7 @@ export default class FilmDetails extends SmartView {
     return Object.assign(
         {},
         film,
-        this._resetExtraData(this._data)
+        this._resetExtraData(film)
     );
   }
 
@@ -322,11 +322,11 @@ export default class FilmDetails extends SmartView {
   }
 
   _watchedCheckboxClickHandler() {
-    this._handler.clickWatched();
+    this._handler.clickWatched(this._data.id);
   }
 
   _watchlistCheckboxClickHandler() {
-    this._handler.clickWatchlist();
+    this._handler.clickWatchlist(this._data.id);
   }
 
   getTemplate() {
@@ -392,11 +392,11 @@ export default class FilmDetails extends SmartView {
       .addEventListener(`click`, this._watchlistCheckboxClickHandler);
   }
 
-  update(comments) {
+  update(film, comments) {
     const scrollTop = this.getElement().scrollTop;
 
+    this._data = this._parseFilmToData(film);
     this._comments = comments.slice();
-    this._data = this._resetExtraData(this._data);
     this.updateElement();
 
     this.getElement().scrollTop = scrollTop;

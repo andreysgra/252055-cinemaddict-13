@@ -24,12 +24,7 @@ export const Emotions = {
 export const filmControlMap = {
   'watchlist': `Add to watchlist`,
   'watched': `Already watched`,
-  'favorite': `Add to favorites`
-};
-
-export const Mode = {
-  DEFAULT: `default`,
-  EDITING: `editing`
+  'favorite': `Add to favorites`,
 };
 
 export const SortType = {
