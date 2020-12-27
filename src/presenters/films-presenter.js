@@ -12,7 +12,7 @@ import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition
 import FilmCardView from '../view/film-card';
 import FilmDetailsView from '../view/film-details';
 
-export default class Films {
+export default class FilmsPresenter {
   constructor(container, filmsModel, commentsModel, filterModel) {
     this._container = container;
 

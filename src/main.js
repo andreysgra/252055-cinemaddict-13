@@ -6,8 +6,8 @@ import FilterModel from "./model/filter.js";
 import {Render} from './utils';
 import {generateFilms} from './mock/films';
 import {generateComments} from './mock/comments';
-import FilmsPresenter from './presenter/films';
-import FilterPresenter from "./presenter/filter.js";
+import FilmsPresenter from './presenters/films-presenter';
+import FilterPresenter from "./presenters/filter-presenter.js";
 
 const comments = generateComments();
 const films = generateFilms(comments);

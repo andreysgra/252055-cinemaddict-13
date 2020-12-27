@@ -2,7 +2,7 @@ import FilmsFilterView from '../view/films-filter';
 import {Render, Filters} from '../utils';
 import {FilterType, UpdateType, RenderPosition} from '../const';
 
-export default class Filter {
+export default class FilterPresenter {
   constructor(container, filterModel, filmsModel) {
     this._container = container;
 
