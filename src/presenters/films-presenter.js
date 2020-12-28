@@ -14,12 +14,14 @@ import FilmCardView from '../view/film-card';
 import FilmDetailsView from '../view/film-details';
 
 export default class FilmsPresenter {
-  constructor(container, filmsModel, commentsModel, filterModel) {
+  constructor(container, filmsModel, commentsModel, filterModel, api) {
     this._container = container;
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
+
+    this._api = api;
 
     this._userProfileComponent = null;
     this._sortingListComponent = null;
@@ -47,7 +49,7 @@ export default class FilmsPresenter {
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._closeFilmDetails = this._closeFilmDetails.bind(this);
+    this._handleCloseFilmDetails = this._handleCloseFilmDetails.bind(this);
     this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
     this._handleAddCommentClick = this._handleAddCommentClick.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
@@ -101,11 +103,12 @@ export default class FilmsPresenter {
     }
   }
 
-  _closeFilmDetails() {
+  _handleCloseFilmDetails() {
     this._filmId = undefined;
     this._commentsModel.removeObserver(this._handleModelEvent);
 
     Render.remove(this._filmDetailsComponent);
+    this._filmDetailsComponent = null;
 
     document.body.classList.remove(`hide-overflow`);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
@@ -129,7 +132,7 @@ export default class FilmsPresenter {
   }
 
   _escKeyDownHandler(evt) {
-    Utils.addEscapeEvent(evt, this._closeFilmDetails);
+    Utils.addEscapeEvent(evt, this._handleCloseFilmDetails);
   }
 
   _handleAddCommentClick(filmId, comment) {
@@ -203,7 +206,8 @@ export default class FilmsPresenter {
               userInfo: {
                 isWatchlist: film.userInfo.isWatchlist,
                 isWatched: film.userInfo.isWatched,
-                isFavorite: !film.userInfo.isFavorite
+                isFavorite: !film.userInfo.isFavorite,
+                watchingDate: film.userInfo.watchingDate
               }
             }
         )
@@ -211,7 +215,18 @@ export default class FilmsPresenter {
   }
 
   _handleFilmCardClick(filmId) {
-    this._renderFilmDetails(filmId);
+    this._filmId = filmId;
+    const film = this._filmsModel.getFilm(this._filmId);
+
+    this._api.getComments(this._filmId)
+      .then((comments) => {
+        this._commentsModel.setComments(comments);
+        this._renderFilmDetails(film, comments);
+      })
+      .catch(() => {
+        this._commentsModel.setComments([]);
+        this._renderFilmDetails(film, []);
+      });
   }
 
   _handleModelEvent(updateType, data) {
@@ -277,7 +292,8 @@ export default class FilmsPresenter {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update)
+          .then((response) => this._filmsModel.updateFilm(updateType, response));
         break;
 
       case UserAction.ADD_COMMENT:
@@ -303,7 +319,8 @@ export default class FilmsPresenter {
               userInfo: {
                 isWatchlist: film.userInfo.isWatchlist,
                 isWatched: !film.userInfo.isWatched,
-                isFavorite: film.userInfo.isFavorite
+                isFavorite: film.userInfo.isFavorite,
+                watchingDate: film.userInfo.watchingDate
               }
             }
         )
@@ -323,7 +340,8 @@ export default class FilmsPresenter {
               userInfo: {
                 isWatchlist: !film.userInfo.isWatchlist,
                 isWatched: film.userInfo.isWatched,
-                isFavorite: film.userInfo.isFavorite
+                isFavorite: film.userInfo.isFavorite,
+                watchingDate: film.userInfo.watchingDate
               }
             }
         )
@@ -342,24 +360,19 @@ export default class FilmsPresenter {
     components.set(film.id, filmComponent);
   }
 
-  _renderFilmDetails(filmId) {
+  _renderFilmDetails(film, comments) {
     if (this._filmDetailsComponent !== null) {
-      this._closeFilmDetails();
-      this._filmDetailsComponent = null;
+      this._handleCloseFilmDetails();
     }
 
-    this._filmId = filmId;
     this._commentsModel.addObserver(this._handleModelEvent);
 
-    this._filmDetailsComponent = new FilmDetailsView(
-        this._filmsModel.getFilm(this._filmId),
-        this._commentsModel.getComments(this._filmId)
-    );
+    this._filmDetailsComponent = new FilmDetailsView(film, comments);
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
 
-    this._filmDetailsComponent.setCloseButtonClickHandler(this._closeFilmDetails);
+    this._filmDetailsComponent.setCloseButtonClickHandler(this._handleCloseFilmDetails);
     this._filmDetailsComponent.setWatchlistCheckboxClickHandler(this._handleWatchlistClick);
     this._filmDetailsComponent.setWatchedCheckboxClickHandler(this._handleWatchedClick);
     this._filmDetailsComponent.setFavoriteCheckboxClickHandler(this._handleFavoriteClick);

@@ -7,32 +7,26 @@ import CommentsModel from './models/comments-model';
 import FilterModel from './models/filter-model';
 import Api from "./api/api";
 import {Render} from './utils';
-import {generateComments} from './mock/comments';
 import {END_POINT, AUTHORIZATION, UpdateType, RenderPosition} from './const';
 
-const comments = generateComments();
+const siteMainElement = document.querySelector(`.main`);
+const footerStatisticsElement = document.querySelector(`.footer__statistics`);
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const filmsModel = new FilmsModel();
-
 const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
-
 const filterModel = new FilterModel();
 
-const siteMainElement = document.querySelector(`.main`);
-const siteFooterElement = document.querySelector(`.footer`);
-const footerStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
-
 const siteMenu = new SiteMenuView();
-const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel, filterModel);
-const filterPresenter = new FilterPresenter(siteMenu, filterModel, filmsModel);
 
-Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
+const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel, filterModel, api);
+const filterPresenter = new FilterPresenter(siteMenu, filterModel, filmsModel);
 
 filmsPresenter.init();
 filterPresenter.init();
+
+Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
 
 api.getFilms()
   .then((films) => {

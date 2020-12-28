@@ -32,7 +32,8 @@ export default class FilmsModel extends Observer {
           userInfo: {
             isWatchlist: film.user_details.watchlist,
             isWatched: film.user_details.already_watched,
-            isFavorite: film.user_details.favorite
+            isFavorite: film.user_details.favorite,
+            watchingDate: new Date(film.user_details.watching_date)
           },
           comments: film.comments
         }
@@ -66,7 +67,8 @@ export default class FilmsModel extends Observer {
           'user_details': {
             'watchlist': film.userInfo.isWatchlist,
             'already_watched': film.userInfo.isWatched,
-            'favorite': film.userInfo.favorite
+            'favorite': film.userInfo.isFavorite,
+            'watching_date': film.userInfo.watchingDate.toISOString()
           },
           'comments': film.comments
         }

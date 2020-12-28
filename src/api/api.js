@@ -1,4 +1,5 @@
 import FilmsModel from '../models/films-model';
+import CommentsModel from '../models/comments-model';
 
 const RequestMethod = {
   GET: `GET`,
@@ -43,7 +44,8 @@ export default class Api {
 
   getComments(filmId) {
     return this._load({url: `comments/${filmId}`})
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then((comments) => comments.map(CommentsModel.adaptToClient));
   }
 
   getFilms() {

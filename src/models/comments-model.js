@@ -7,6 +7,18 @@ export default class CommentsModel extends Observer {
     this._comments = [];
   }
 
+  static adaptToClient(comment) {
+    const adaptedComment = Object.assign(
+        {},
+        comment,
+        {
+          date: new Date(comment.date)
+        }
+    );
+
+    return adaptedComment;
+  }
+
   addComment(updateType, update) {
     this._comments[update.id] = [
       update.comment,
@@ -14,6 +26,18 @@ export default class CommentsModel extends Observer {
     ];
 
     this._notify(updateType, update);
+  }
+
+  static adaptToServer(comment) {
+    const adaptedComment = Object.assign(
+        {},
+        comment,
+        {
+          date: comment.date.toISOString()
+        }
+    );
+
+    return adaptedComment;
   }
 
   deleteComment(updateType, update) {
@@ -32,8 +56,8 @@ export default class CommentsModel extends Observer {
     this._notify(updateType, update);
   }
 
-  getComments(filmId) {
-    return this._comments[filmId];
+  getComments() {
+    return this._comments;
   }
 
   setComments(comments) {
