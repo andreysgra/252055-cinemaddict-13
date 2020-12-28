@@ -6,14 +6,15 @@ import FilmsModel from './models/films-model';
 import CommentsModel from './models/comments-model';
 import FilterModel from './models/filter-model';
 import {Render} from './utils';
-import {generateFilms} from './mock/films';
 import {generateComments} from './mock/comments';
+import Api from "./api/api";
+import {END_POINT, AUTHORIZATION} from './const';
 
 const comments = generateComments();
-const films = generateFilms(comments);
+
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
 
 const commentsModel = new CommentsModel();
 commentsModel.setComments(comments);
@@ -33,3 +34,6 @@ Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsC
 
 filmsPresenter.init();
 filterPresenter.init();
+
+api.getFilms()
+  .then((films) => filmsModel.getFilms(films));

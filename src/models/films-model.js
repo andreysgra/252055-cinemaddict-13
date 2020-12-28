@@ -7,8 +7,72 @@ export default class FilmsModel extends Observer {
     this._films = [];
   }
 
-  get filmsCount() {
-    return this._films.length;
+  static adaptToClient(film) {
+    const adaptedFilm = Object.assign(
+        {},
+        {
+          id: film.id,
+          filmInfo: {
+            title: film.film_info.title,
+            originalTitle: film.film_info.alternative_title,
+            poster: film.film_info.poster,
+            director: film.film_info.director,
+            description: film.film_info.description,
+            writers: film.film_info.writers,
+            actors: film.film_info.actors,
+            genres: film.film_info.genre,
+            release: {
+              date: film.film_info.release.date,
+              country: film.film_info.release.release_country
+            },
+            runtime: film.film_info.runtime,
+            totalRating: film.film_info.total_rating,
+            ageRating: film.film_info.age_rating
+          },
+          userInfo: {
+            isWatchlist: film.user_details.watchlist,
+            isWatched: film.user_details.already_watched,
+            isFavorite: film.user_details.favorite
+          },
+          comments: film.comments
+        }
+    );
+
+    return adaptedFilm;
+  }
+
+  static adaptToServer(film) {
+    const adaptedFilm = Object.assign(
+        {},
+        {
+          'id': film.id,
+          'film_info': {
+            'title': film.filmInfo.title,
+            'alternative_title': film.filmInfo.originalTitle,
+            'poster': film.filmInfo.poster,
+            'director': film.filmInfo.director,
+            'description': film.filmInfo.description,
+            'writers': film.filmInfo.writers,
+            'actors': film.filmInfo.actors,
+            'genre': film.filmInfo.genres,
+            'release': {
+              'date': film.filmInfo.release.date,
+              'release_country': film.filmInfo.release.country
+            },
+            'runtime': film.filmInfo.runtime,
+            'total_rating': film.filmInfo.totalRating,
+            'age_rating': film.filmInfo.ageRating,
+          },
+          'user_details': {
+            'watchlist': film.userInfo.isWatchlist,
+            'already_watched': film.userInfo.isWatched,
+            'favorite': film.userInfo.favorite
+          },
+          'comments': film.comments
+        }
+    );
+
+    return adaptedFilm;
   }
 
   getFilm(id) {
@@ -17,6 +81,10 @@ export default class FilmsModel extends Observer {
 
   getFilms() {
     return this._films;
+  }
+
+  get filmsCount() {
+    return this._films.length;
   }
 
   setFilms(films) {

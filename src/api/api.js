@@ -1,3 +1,5 @@
+import FilmsModel from '../models/films-model';
+
 const RequestMethod = {
   GET: `GET`,
   POST: `POST`,
@@ -46,10 +48,22 @@ export default class Api {
 
   getFilms() {
     return this._load({url: `movies`})
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then((films) => films.map(FilmsModel.adaptToClient));
   }
 
   static toJSON(response) {
     return response.json();
+  }
+
+  updateFilm(film) {
+    return this._load({
+      url: `movies/${film.id}`,
+      method: RequestMethod.PUT,
+      body: JSON.stringify(FilmsModel.adaptToServer(film)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then(FilmsModel.adaptToClient);
   }
 }
