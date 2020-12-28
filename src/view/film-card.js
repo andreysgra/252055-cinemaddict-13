@@ -62,7 +62,6 @@ export default class FilmCard extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
-    this._currentItem = null;
 
     this._clickHandler = this._clickHandler.bind(this);
     this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
@@ -71,35 +70,33 @@ export default class FilmCard extends AbstractView {
   }
 
   _clickHandler(evt) {
-    this._currentItem = evt.target;
-
-    if (this._currentItem.className !== `film-card__poster`
-      && this._currentItem.className !== `film-card__title`
-      && this._currentItem.className !== `film-card__comments`) {
+    if (evt.target.className !== `film-card__poster`
+      && evt.target.className !== `film-card__title`
+      && evt.target.className !== `film-card__comments`) {
       return;
     }
 
     evt.preventDefault();
 
-    this._handler.click(this._film);
+    this._handler.click(this._film.id);
   }
 
   _favoriteButtonClickHandler(evt) {
     evt.preventDefault();
 
-    this._handler.clickFavorite();
+    this._handler.clickFavorite(this._film.id);
   }
 
   _watchedButtonClickHandler(evt) {
     evt.preventDefault();
 
-    this._handler.clickWatched();
+    this._handler.clickWatched(this._film.id);
   }
 
   _watchlistButtonClickHandler(evt) {
     evt.preventDefault();
 
-    this._handler.clickWatchlist(evt);
+    this._handler.clickWatchlist(this._film.id);
   }
 
   getTemplate() {

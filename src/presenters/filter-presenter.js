@@ -1,8 +1,8 @@
 import FilmsFilterView from '../view/films-filter';
-import {Render, Filters} from '../utils';
+import {Render, Filter} from '../utils';
 import {FilterType, UpdateType, RenderPosition} from '../const';
 
-export default class Filter {
+export default class FilterPresenter {
   constructor(container, filterModel, filmsModel) {
     this._container = container;
 
@@ -26,22 +26,22 @@ export default class Filter {
       {
         type: FilterType.ALL,
         name: `All movies`,
-        count: Filters.getFilterCount(films, FilterType.ALL)
+        count: Filter.getFilterCount(films, FilterType.ALL)
       },
       {
         type: FilterType.WATCHLIST,
         name: `Watchlist`,
-        count: Filters.getFilterCount(films, FilterType.WATCHLIST)
+        count: Filter.getFilterCount(films, FilterType.WATCHLIST)
       },
       {
         type: FilterType.HISTORY,
         name: `History`,
-        count: Filters.getFilterCount(films, FilterType.HISTORY)
+        count: Filter.getFilterCount(films, FilterType.HISTORY)
       },
       {
         type: FilterType.FAVORITES,
         name: `Favorites`,
-        count: Filters.getFilterCount(films, FilterType.FAVORITES)
+        count: Filter.getFilterCount(films, FilterType.FAVORITES)
       }
     ];
   }

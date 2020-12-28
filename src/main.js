@@ -1,35 +1,39 @@
 import SiteMenuView from './view/site-menu';
 import FilmsStatisticsView from './view/films-statistics';
-import FilmsModel from './model/films';
-import CommentsModel from './model/comments';
-import FilterModel from "./model/filter.js";
+import FilmsPresenter from './presenters/films-presenter';
+import FilterPresenter from './presenters/filter-presenter';
+import FilmsModel from './models/films-model';
+import CommentsModel from './models/comments-model';
+import FilterModel from './models/filter-model';
+import Api from "./api/api";
 import {Render} from './utils';
-import {generateFilms} from './mock/films';
-import {generateComments} from './mock/comments';
-import FilmsPresenter from './presenter/films';
-import FilterPresenter from "./presenter/filter.js";
-
-const comments = generateComments();
-const films = generateFilms(comments);
-
-const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
-
-const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
-
-const filterModel = new FilterModel();
+import {END_POINT, AUTHORIZATION, UpdateType, RenderPosition} from './const';
 
 const siteMainElement = document.querySelector(`.main`);
-const siteFooterElement = document.querySelector(`.footer`);
-const footerStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
+const footerStatisticsElement = document.querySelector(`.footer__statistics`);
+
+const api = new Api(END_POINT, AUTHORIZATION);
+
+const filmsModel = new FilmsModel();
+const commentsModel = new CommentsModel();
+const filterModel = new FilterModel();
 
 const siteMenu = new SiteMenuView();
-const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel, filterModel);
-const filterPresenter = new FilterPresenter(siteMenu, filterModel, filmsModel);
 
-Render.render(siteMainElement, siteMenu);
-Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
+const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel, filterModel, api);
+const filterPresenter = new FilterPresenter(siteMenu, filterModel, filmsModel);
 
 filmsPresenter.init();
 filterPresenter.init();
+
+Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
+
+api.getFilms()
+  .then((films) => {
+    filmsModel.setFilms(UpdateType.INIT, films);
+    Render.render(siteMainElement, siteMenu, RenderPosition.AFTERBEGIN);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
+    Render.render(siteMainElement, siteMenu, RenderPosition.AFTERBEGIN);
+  });
