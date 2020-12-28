@@ -5,10 +5,10 @@ import FilterPresenter from './presenters/filter-presenter';
 import FilmsModel from './models/films-model';
 import CommentsModel from './models/comments-model';
 import FilterModel from './models/filter-model';
+import Api from "./api/api";
 import {Render} from './utils';
 import {generateComments} from './mock/comments';
-import Api from "./api/api";
-import {END_POINT, AUTHORIZATION} from './const';
+import {END_POINT, AUTHORIZATION, UpdateType, RenderPosition} from './const';
 
 const comments = generateComments();
 
@@ -29,11 +29,17 @@ const siteMenu = new SiteMenuView();
 const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMenu, filterModel, filmsModel);
 
-Render.render(siteMainElement, siteMenu);
 Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
 
 filmsPresenter.init();
 filterPresenter.init();
 
 api.getFilms()
-  .then((films) => filmsModel.getFilms(films));
+  .then((films) => {
+    filmsModel.setFilms(UpdateType.INIT, films);
+    Render.render(siteMainElement, siteMenu, RenderPosition.AFTERBEGIN);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
+    Render.render(siteMainElement, siteMenu, RenderPosition.AFTERBEGIN);
+  });

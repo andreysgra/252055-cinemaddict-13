@@ -22,7 +22,7 @@ export default class FilmsModel extends Observer {
             actors: film.film_info.actors,
             genres: film.film_info.genre,
             release: {
-              date: film.film_info.release.date,
+              date: new Date(film.film_info.release.date),
               country: film.film_info.release.release_country
             },
             runtime: film.film_info.runtime,
@@ -56,7 +56,7 @@ export default class FilmsModel extends Observer {
             'actors': film.filmInfo.actors,
             'genre': film.filmInfo.genres,
             'release': {
-              'date': film.filmInfo.release.date,
+              'date': film.filmInfo.release.date.toISOString(),
               'release_country': film.filmInfo.release.country
             },
             'runtime': film.filmInfo.runtime,
@@ -87,8 +87,10 @@ export default class FilmsModel extends Observer {
     return this._films.length;
   }
 
-  setFilms(films) {
+  setFilms(updateType, films) {
     this._films = films.slice();
+
+    this._notify(updateType);
   }
 
   updateFilm(updateType, update) {
