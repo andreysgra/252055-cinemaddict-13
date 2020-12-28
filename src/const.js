@@ -2,6 +2,9 @@ export const FILMS_COUNT_PER_STEP = 5;
 export const FILMS_EXTRA_COUNT = 2;
 export const DESCRIPTION_LENGTH = 140;
 
+export const AUTHORIZATION = `Basic 25e883jdzbdw`;
+export const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
+
 export const ExtraFilmsTitle = {
   TOP_RATED: `Top rated`,
   MOST_COMMENTED: `Most commented`
