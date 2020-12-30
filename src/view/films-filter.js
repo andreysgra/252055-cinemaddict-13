@@ -39,8 +39,11 @@ export default class FilmsFilter extends AbstractView {
   }
 
   _filterTypeChangeHandler(evt) {
-    evt.preventDefault();
+    if (evt.target.tagName !== `A`) {
+      return;
+    }
 
+    evt.preventDefault();
     this._handler.filterTypeChange(evt.target.dataset.filter);
   }
 

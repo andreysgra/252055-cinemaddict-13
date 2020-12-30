@@ -27,6 +27,17 @@ export default class Api {
       .catch(Api.catchError);
   }
 
+  addComment(comment, filmId) {
+    return this._load({
+      url: `comments/${filmId}`,
+      method: RequestMethod.POST,
+      body: JSON.stringify(CommentsModel.adaptToServer(comment)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+    ;
+  }
+
   static catchError(err) {
     throw err;
   }
@@ -40,6 +51,13 @@ export default class Api {
     }
 
     return response;
+  }
+
+  deleteComment(data) {
+    return this._load({
+      url: `comments/${data.commentId}`,
+      method: RequestMethod.DELETE
+    });
   }
 
   getComments(filmId) {
