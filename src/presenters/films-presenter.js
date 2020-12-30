@@ -282,8 +282,16 @@ export default class FilmsPresenter {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
+        if (this._filmDetailsComponent) {
+          this._filmDetailsComponent.setViewState(State.ADDING);
+        }
         this._api.updateFilm(update)
-          .then((response) => this._filmsModel.updateFilm(updateType, response));
+          .then((response) => this._filmsModel.updateFilm(updateType, response))
+          .catch(() => {
+            if (this._filmDetailsComponent) {
+              this._filmDetailsComponent.setViewState(State.ABORTING);
+            }
+          });
         break;
 
       case UserAction.ADD_COMMENT:
@@ -292,6 +300,9 @@ export default class FilmsPresenter {
           .then((response) => {
             this._commentsModel.setComments(response.comments.map(CommentsModel.adaptToClient));
             this._filmsModel.updateFilm(updateType, FilmsModel.adaptToClient(response.movie));
+          })
+          .catch(() => {
+            this._filmDetailsComponent.setViewState(State.ABORTING);
           });
         break;
 
@@ -310,6 +321,9 @@ export default class FilmsPresenter {
                     }
                 )
             );
+          })
+          .catch(() => {
+            this._filmDetailsComponent.setViewState(State.ABORTING);
           });
         break;
     }

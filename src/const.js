@@ -58,5 +58,6 @@ export const FilterType = {
 
 export const State = {
   ADDING: `ADDING`,
-  DELETING: `DELETING`
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
 };

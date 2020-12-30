@@ -404,13 +404,27 @@ export default class FilmDetails extends SmartView {
   }
 
   setViewState(state) {
-    if (state === State.ADDING || state === State.DELETING) {
-      this.updateData(
-          {
-            isDisabled: true,
-            isDeleting: true
-          }
-      );
+    const resetFormState = () => {
+      this.updateData({
+        isDisabled: false,
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case State.ADDING:
+      case State.DELETING:
+        this.updateData(
+            {
+              isDisabled: true,
+              isDeleting: true
+            }
+        );
+        break;
+
+      case State.ABORTING:
+        this.shake(resetFormState);
+        break;
     }
   }
 
