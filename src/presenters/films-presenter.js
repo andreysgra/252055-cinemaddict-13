@@ -12,7 +12,7 @@ import LoadingView from '../view/loading';
 import FilmsModel from '../models/films-model';
 import CommentsModel from '../models/comments-model';
 import {Utils, Render, Filter} from '../utils';
-import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType, UpdateType, UserAction} from '../const';
+import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType, UpdateType, UserAction, State} from '../const';
 
 export default class FilmsPresenter {
   constructor(container, filmsModel, commentsModel, filterModel, api) {
@@ -287,6 +287,7 @@ export default class FilmsPresenter {
         break;
 
       case UserAction.ADD_COMMENT:
+        this._filmDetailsComponent.setViewState(State.ADDING);
         this._api.addComment(update, this._filmId)
           .then((response) => {
             this._commentsModel.setComments(response.comments.map(CommentsModel.adaptToClient));
@@ -295,6 +296,7 @@ export default class FilmsPresenter {
         break;
 
       case UserAction.DELETE_COMMENT:
+        this._filmDetailsComponent.setViewState(State.DELETING);
         this._api.deleteComment(update)
           .then(() => {
             this._commentsModel.deleteComment(updateType, update);

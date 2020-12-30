@@ -1,10 +1,14 @@
 import SmartView from "./smart.js";
 import {Utils, FormatTime} from '../utils';
-import {filmControlMap, Emotions} from '../const';
+import {filmControlMap, Emotions, State} from '../const';
 import he from "he";
 
 const addCheckedProperty = (isChecked) => {
   return isChecked ? `checked` : ``;
+};
+
+const addDisabledProperty = (isDisabled) => {
+  return isDisabled ? `disabled` : ``;
 };
 
 const createGenresTemplate = (genres) => {
@@ -29,10 +33,14 @@ const createEmotion = (emotion, checked) => {
   `;
 };
 
-const createCommentTemplate = (item) => {
+const createCommentTemplate = (item, isDisabled, isDeleting, deletedCommentId) => {
   const {id, comment, emotion, author, date} = item;
   const commentDate = FormatTime.getFullDateWithTime(date);
   const commentDateHumanize = FormatTime.getHumanizeDate(date);
+
+  isDeleting = isDeleting && id === deletedCommentId;
+  isDisabled = isDisabled && id === deletedCommentId;
+  const buttonText = isDeleting ? `Deleting...` : `Delete`;
 
   return `
     <li class="film-details__comment">
@@ -44,18 +52,20 @@ const createCommentTemplate = (item) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day" title="${commentDate}">${commentDateHumanize}</span>
-          <button class="film-details__comment-delete" data-id="${id}">Delete</button>
+          <button class="film-details__comment-delete" data-id="${id}" ${addDisabledProperty(isDisabled)}>
+            ${buttonText}
+          </button>
         </p>
       </div>
     </li>
   `;
 };
 
-const createFilmCommentsTemplate = (comments) => {
+const createFilmCommentsTemplate = (comments, isDisabled, isDeleting, deletedCommentId) => {
   const commentsList = comments
     .slice()
     .sort(Utils.sortCommentsByDate)
-    .map((item) => createCommentTemplate(item))
+    .map((item) => createCommentTemplate(item, isDisabled, isDeleting, deletedCommentId))
     .join(``);
 
   return `
@@ -65,7 +75,7 @@ const createFilmCommentsTemplate = (comments) => {
   `;
 };
 
-const createFilmNewCommentTemplate = (emojiIcon, checkedEmojiItem, comment) => {
+const createFilmNewCommentTemplate = (emojiIcon, checkedEmojiItem, comment, isDisabled) => {
   const emojiList = Object.values(Emotions)
     .map((emotion) => createEmotion(emotion, addCheckedProperty(`emoji-${emotion}` === checkedEmojiItem)))
     .join(``);
@@ -78,7 +88,7 @@ const createFilmNewCommentTemplate = (emojiIcon, checkedEmojiItem, comment) => {
       <div class="film-details__add-emoji-label">${emojiImg}</div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${addDisabledProperty(isDisabled)}>${comment}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -110,7 +120,10 @@ const createFilmDetailsTemplate = (data, comments) => {
     userInfo,
     emojiIcon,
     checkedEmojiItem,
-    comment
+    comment,
+    isDisabled,
+    isDeleting,
+    deletedCommentId
   } = data;
 
   const releaseDate = FormatTime.getFullDateMonthAsString(date);
@@ -120,7 +133,7 @@ const createFilmDetailsTemplate = (data, comments) => {
   const genreTitle = genres.length > 1 ? `Genres` : `Genre`;
   const genresList = createGenresTemplate(genres);
   const commentsCount = comments.length;
-  const filmCommentsTemplate = createFilmCommentsTemplate(comments);
+  const filmCommentsTemplate = createFilmCommentsTemplate(comments, isDisabled, isDeleting, deletedCommentId);
   const userInfoValues = Object.values(userInfo);
   const filmControls = Object.entries(filmControlMap)
     .map((item, index) => {
@@ -128,7 +141,7 @@ const createFilmDetailsTemplate = (data, comments) => {
     })
     .join(``);
 
-  const filmNewComment = createFilmNewCommentTemplate(emojiIcon, checkedEmojiItem, comment);
+  const filmNewComment = createFilmNewCommentTemplate(emojiIcon, checkedEmojiItem, comment, isDisabled);
 
   return `
     <section class="film-details">
@@ -248,9 +261,8 @@ export default class FilmDetails extends SmartView {
   _deleteButtonClickHandler(evt) {
     evt.preventDefault();
 
-    const commentId = evt.target.dataset.id;
-
-    this._handler.clickDelete(this._data.id, commentId);
+    this._data.deletedCommentId = evt.target.dataset.id;
+    this._handler.clickDelete(this._data.id, this._data.deletedCommentId);
   }
 
   _emojiItemsClickHandler(evt) {
@@ -300,7 +312,10 @@ export default class FilmDetails extends SmartView {
         {
           emojiIcon: ``,
           checkedEmojiItem: ``,
-          comment: ``
+          comment: ``,
+          isDisabled: false,
+          isDeleting: false,
+          deletedCommentId: ``
         }
     );
   }
@@ -386,6 +401,17 @@ export default class FilmDetails extends SmartView {
     this.getElement()
       .querySelector(`#watchlist`)
       .addEventListener(`click`, this._watchlistCheckboxClickHandler);
+  }
+
+  setViewState(state) {
+    if (state === State.ADDING || state === State.DELETING) {
+      this.updateData(
+          {
+            isDisabled: true,
+            isDeleting: true
+          }
+      );
+    }
   }
 
   update(film, comments) {
