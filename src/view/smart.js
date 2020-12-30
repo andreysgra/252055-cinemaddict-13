@@ -30,6 +30,7 @@ export default class Smart extends AbstractView {
   updateElement() {
     const oldElement = this.getElement();
     const parentElement = oldElement.parentElement;
+    const scrollTop = oldElement.scrollTop;
 
     this.removeElement();
 
@@ -37,6 +38,7 @@ export default class Smart extends AbstractView {
 
     parentElement.replaceChild(newElement, oldElement);
 
+    newElement.scrollTop = scrollTop;
     this.restoreHandlers();
   }
 }

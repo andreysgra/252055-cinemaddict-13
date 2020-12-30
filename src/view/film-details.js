@@ -65,23 +65,24 @@ const createFilmCommentsTemplate = (comments) => {
   `;
 };
 
-const createFilmNewCommentTemplate = (emojiIcon, hasEmoji, checkedEmojiItem, comment) => {
-  const emotionsList = Object.values(Emotions)
+const createFilmNewCommentTemplate = (emojiIcon, checkedEmojiItem, comment) => {
+  const emojiList = Object.values(Emotions)
     .map((emotion) => createEmotion(emotion, addCheckedProperty(`emoji-${emotion}` === checkedEmojiItem)))
     .join(``);
 
+  const emojiImg = emojiIcon !== `` ?
+    `<img src="./images/emoji/${emojiIcon}.png" width="55" height="55" alt="emoji-smile">` : ``;
+
   return `
     <div class="film-details__new-comment">
-      <div class="film-details__add-emoji-label">
-        ${hasEmoji ? `<img src="./images/emoji/${emojiIcon}.png" width="55" height="55" alt="emoji-smile">` : ``}
-      </div>
+      <div class="film-details__add-emoji-label">${emojiImg}</div>
 
       <label class="film-details__comment-label">
         <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
-        ${emotionsList}
+        ${emojiList}
       </div>
     </div>
   `;
@@ -108,7 +109,6 @@ const createFilmDetailsTemplate = (data, comments) => {
     },
     userInfo,
     emojiIcon,
-    hasEmoji,
     checkedEmojiItem,
     comment
   } = data;
@@ -128,7 +128,7 @@ const createFilmDetailsTemplate = (data, comments) => {
     })
     .join(``);
 
-  const filmNewComment = createFilmNewCommentTemplate(emojiIcon, hasEmoji, checkedEmojiItem, comment);
+  const filmNewComment = createFilmNewCommentTemplate(emojiIcon, checkedEmojiItem, comment);
 
   return `
     <section class="film-details">
@@ -237,9 +237,12 @@ export default class FilmDetails extends SmartView {
   }
 
   _commentTextareaHandler(evt) {
-    this.updateData({
-      comment: evt.target.value
-    }, true);
+    this.updateData(
+        {
+          comment: evt.target.value
+        },
+        true
+    );
   }
 
   _deleteButtonClickHandler(evt) {
@@ -251,11 +254,8 @@ export default class FilmDetails extends SmartView {
   }
 
   _emojiItemsClickHandler(evt) {
-    const scrollTop = this.getElement().scrollTop;
-
     this.updateData({
       emojiIcon: evt.target.value,
-      hasEmoji: true,
       checkedEmojiItem: evt.target.id,
       userInfo: {
         isWatchlist: this.getElement().querySelector(`#watchlist`).checked,
@@ -263,8 +263,6 @@ export default class FilmDetails extends SmartView {
         isFavorite: this.getElement().querySelector(`#favorite`).checked
       }
     });
-
-    this.getElement().scrollTop = scrollTop;
   }
 
   _favoriteCheckboxClickHandler() {
@@ -280,11 +278,10 @@ export default class FilmDetails extends SmartView {
       const newComment = {
         comment: this._data.comment,
         emotion: this._data.emojiIcon,
-        author: `Author`,
         date: new Date()
       };
 
-      this._handler.formKeydown(this._data.id, newComment);
+      this._handler.formKeydown(newComment);
     }
   }
 
@@ -302,7 +299,6 @@ export default class FilmDetails extends SmartView {
         data,
         {
           emojiIcon: ``,
-          hasEmoji: false,
           checkedEmojiItem: ``,
           comment: ``
         }
@@ -393,12 +389,8 @@ export default class FilmDetails extends SmartView {
   }
 
   update(film, comments) {
-    const scrollTop = this.getElement().scrollTop;
-
     this._data = this._parseFilmToData(film);
     this._comments = comments.slice();
     this.updateElement();
-
-    this.getElement().scrollTop = scrollTop;
   }
 }

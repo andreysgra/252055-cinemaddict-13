@@ -36,14 +36,12 @@ export default class SortingList extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    this._currentItem = evt.target;
-
-    if (this._currentItem.tagName !== `A`) {
+    if (evt.target.tagName !== `A`) {
       return;
     }
 
     evt.preventDefault();
-    this._handler.sortTypeChange(this._currentItem.dataset.sortType);
+    this._handler.sortTypeChange(evt.target.dataset.sortType);
   }
 
   getTemplate() {
