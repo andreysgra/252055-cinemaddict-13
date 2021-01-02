@@ -35,6 +35,15 @@ export default class Api {
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then(Api.toJSON)
+      .then((response) => {
+        return Object.assign(
+            {},
+            {
+              movie: FilmsModel.adaptToClient(response.movie),
+              comments: response.comments.map(CommentsModel.adaptToClient)
+            }
+        );
+      })
     ;
   }
 

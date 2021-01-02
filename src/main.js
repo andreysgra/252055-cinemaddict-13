@@ -26,14 +26,14 @@ const filterPresenter = new FilterPresenter(siteMenu, filterModel, filmsModel);
 filmsPresenter.init();
 filterPresenter.init();
 
-Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
-
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
     Render.render(siteMainElement, siteMenu, RenderPosition.AFTERBEGIN);
+    Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
     Render.render(siteMainElement, siteMenu, RenderPosition.AFTERBEGIN);
+    Render.render(footerStatisticsElement, new FilmsStatisticsView(filmsModel.filmsCount));
   });

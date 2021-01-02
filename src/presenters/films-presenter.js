@@ -9,8 +9,6 @@ import FilmCardView from '../view/film-card';
 import FilmDetailsView from '../view/film-details';
 import NoFilmsView from '../view/no-films';
 import LoadingView from '../view/loading';
-import FilmsModel from '../models/films-model';
-import CommentsModel from '../models/comments-model';
 import {Utils, Render, Filter} from '../utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType, UpdateType, UserAction, State} from '../const';
 
@@ -298,8 +296,8 @@ export default class FilmsPresenter {
         this._filmDetailsComponent.setViewState(State.ADDING);
         this._api.addComment(update, this._filmId)
           .then((response) => {
-            this._commentsModel.setComments(response.comments.map(CommentsModel.adaptToClient));
-            this._filmsModel.updateFilm(updateType, FilmsModel.adaptToClient(response.movie));
+            this._commentsModel.setComments(response.comments);
+            this._filmsModel.updateFilm(updateType, response.movie);
           })
           .catch(() => {
             this._filmDetailsComponent.setViewState(State.ABORTING);
