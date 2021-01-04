@@ -2,11 +2,9 @@ import StatisticView from '../view/statistic';
 import {Render, Utils, FormatTime} from '../utils';
 import {StatsType} from '../const';
 import dayjs from 'dayjs';
-import isBetween from "dayjs/plugin/isBetween";
-import duration from 'dayjs/plugin/duration';
+import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(isBetween);
-dayjs.extend(duration);
 
 export default class StatisticPresenter {
   constructor(container, filmsModel) {
@@ -57,6 +55,8 @@ export default class StatisticPresenter {
     const watchedFilmsCount = filmsWatched.length;
     const userRank = Utils.getUserRank(this._filmsModel.getFilms());
     const totalDuration = filmsWatched.reduce((count, film) => count + film.filmInfo.runtime, 0);
+    const totalDurationHours = FormatTime.getDurationHours(totalDuration);
+    const totalDurationMinutes = FormatTime.getDurationMinutes(totalDuration);
 
     const allFilmsGenres = filmsWatched.reduce((allGenres, film) => {
       allGenres.push(...film.filmInfo.genres);
@@ -82,8 +82,8 @@ export default class StatisticPresenter {
     return {
       watchedFilmsCount,
       userRank,
-      totalDurationHours: FormatTime.getDurationHours(totalDuration),
-      totalDurationMinutes: FormatTime.getDurationMinutes(totalDuration),
+      totalDurationHours,
+      totalDurationMinutes,
       genresList,
       topGenre,
       currentFilter

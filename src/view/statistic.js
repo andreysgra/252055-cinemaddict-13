@@ -1,6 +1,6 @@
-import SmartView from './smart.js';
+import SmartView from './smart';
 import {StatsType} from '../const';
-import Chart from "chart.js";
+import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const createFilterItemTemplate = (filter, currentFilter) => {

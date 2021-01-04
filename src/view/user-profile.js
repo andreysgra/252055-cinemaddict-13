@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import SmartView from './smart';
 
 const createUserProfileTemplate = (userRank) => {
   return `
@@ -9,13 +9,21 @@ const createUserProfileTemplate = (userRank) => {
   `;
 };
 
-export default class UserProfile extends AbstractView {
+export default class UserProfile extends SmartView {
   constructor(userRank) {
     super();
+
     this._userRank = userRank;
   }
 
   getTemplate() {
     return createUserProfileTemplate(this._userRank);
+  }
+
+  restoreHandlers() {}
+
+  setRank(userRank) {
+    this._userRank = userRank;
+    this.updateElement();
   }
 }

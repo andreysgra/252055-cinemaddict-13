@@ -1,4 +1,3 @@
-import UserProfileView from '../view/user-profile';
 import SortingListView from '../view/sorting-list';
 import FilmsView from '../view/films';
 import FilmsListView from '../view/films-list';
@@ -13,16 +12,16 @@ import {Utils, Render, Filter} from '../utils';
 import {FILMS_COUNT_PER_STEP, FILMS_EXTRA_COUNT, ExtraFilmsTitle, RenderPosition, SortType, UpdateType, UserAction, State} from '../const';
 
 export default class FilmsPresenter {
-  constructor(container, filmsModel, commentsModel, filterModel, api) {
+  constructor(container, models, components, api) {
     this._container = container;
 
-    this._filmsModel = filmsModel;
-    this._commentsModel = commentsModel;
-    this._filterModel = filterModel;
+    this._filmsModel = models.filmsModel;
+    this._commentsModel = models.commentsModel;
+    this._filterModel = models.filterModel;
 
     this._api = api;
 
-    this._userProfileComponent = null;
+    this._userProfileComponent = components.userProfileComponent;
     this._sortingListComponent = null;
     this._filmsComponent = new FilmsView();
     this._filmsListComponent = new FilmsListView();
@@ -38,7 +37,6 @@ export default class FilmsPresenter {
     this._filmTopRatedComponents = new Map();
     this._filmMostCommentedComponents = new Map();
 
-    this._siteHeaderElement = document.querySelector(`.header`);
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._isLoading = true;
@@ -67,7 +65,6 @@ export default class FilmsPresenter {
 
     Render.remove(this._filmsListContainerComponent);
     Render.remove(this._filmsListComponent);
-    Render.remove(this._userProfileComponent);
     Render.remove(this._loadingComponent);
     Render.remove(this._showMoreButtonComponent);
 
@@ -222,14 +219,13 @@ export default class FilmsPresenter {
         break;
 
       case UpdateType.MINOR:
-        Render.remove(this._userProfileComponent);
         this._clearFilmsMain();
         this._clearFilmsTopRated();
         this._clearFilmsMostCommented();
-        this._renderUserProfile();
         this._renderFilmsMain();
         this._renderFilmsTopRated();
         this._renderFilmsMostCommented();
+        this._userProfileComponent.setRank(Utils.getUserRank(this._filmsModel.getFilms()));
 
         if (this._filmDetailsComponent && this._filmId === data.id) {
           this._filmDetailsComponent.update(data, this._commentsModel.getComments());
@@ -245,6 +241,7 @@ export default class FilmsPresenter {
         this._isLoading = false;
         Render.remove(this._loadingComponent);
         this._renderFilmsBoard();
+        this._userProfileComponent.setRank(Utils.getUserRank(this._filmsModel.getFilms()));
         break;
     }
   }
@@ -413,7 +410,6 @@ export default class FilmsPresenter {
     Render.render(this._filmsComponent, this._filmsListComponent);
     Render.render(this._filmsListComponent, this._filmsListContainerComponent);
 
-    this._renderUserProfile();
     this._renderFilmsMain();
     this._renderFilmsTopRated();
     this._renderFilmsMostCommented();
@@ -497,11 +493,6 @@ export default class FilmsPresenter {
 
     this._sortingListComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     Render.render(this._filmsComponent, this._sortingListComponent, RenderPosition.BEFOREBEGIN);
-  }
-
-  _renderUserProfile() {
-    this._userProfileComponent = new UserProfileView(Utils.getUserRank(this._filmsModel.getFilms()));
-    Render.render(this._siteHeaderElement, this._userProfileComponent);
   }
 
   _replaceFilmComponent(filmComponents, filmId) {
