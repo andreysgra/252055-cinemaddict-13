@@ -1,5 +1,7 @@
 import SmartView from './smart.js';
 import {StatsType} from '../const';
+import Chart from "chart.js";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const createFilterItemTemplate = (filter, currentFilter) => {
   const {type, name} = filter;
@@ -70,8 +72,11 @@ export default class Statistic extends SmartView {
 
     this._data = data;
     this._filters = this._getFilters();
+    this._statisticChart = null;
 
     this._filterItemsChangeHandler = this._filterItemsChangeHandler.bind(this);
+
+    this._setChart();
   }
 
   _filterItemsChangeHandler(evt) {
@@ -103,12 +108,94 @@ export default class Statistic extends SmartView {
     ];
   }
 
+  _renderChart(statisticCtx, genresList) {
+    return new Chart(statisticCtx, {
+      plugins: [ChartDataLabels],
+      type: `horizontalBar`,
+      data: {
+        labels: [...genresList.keys()],
+        datasets: [{
+          data: [...genresList.values()],
+          backgroundColor: `#ffe800`,
+          hoverBackgroundColor: `#ffe800`,
+          anchor: `start`,
+          barThickness: 24
+        }]
+      },
+      options: {
+        plugins: {
+          datalabels: {
+            font: {
+              size: 20
+            },
+            color: `#ffffff`,
+            anchor: `start`,
+            align: `start`,
+            offset: 40,
+          }
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              fontColor: `#ffffff`,
+              padding: 100,
+              fontSize: 20
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false
+            },
+          }],
+          xAxes: [{
+            ticks: {
+              display: false,
+              beginAtZero: true
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false
+            },
+          }],
+        },
+        legend: {
+          display: false
+        },
+        tooltips: {
+          enabled: false
+        }
+      }
+    });
+  }
+
+  _setChart() {
+    if (this._statisticChart !== null) {
+      this._statisticChart = null;
+    }
+
+    const BAR_HEIGHT = 50;
+    const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
+    const {genresList} = this._data;
+
+    statisticCtx.height = BAR_HEIGHT * genresList.size;
+
+    this._renderChart(statisticCtx, genresList);
+  }
+
   getTemplate() {
     return createStatisticTemplate(this._data, this._filters);
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._statisticChart !== null) {
+      this._statisticChart = null;
+    }
+  }
+
   restoreHandlers() {
     this.setFilterItemsChangeHandler(this._handler.changeFilter);
+    this._setChart();
   }
 
   setFilterItemsChangeHandler(handler) {
