@@ -341,7 +341,7 @@ export default class FilmsPresenter {
                 isWatchlist: film.userInfo.isWatchlist,
                 isWatched: !film.userInfo.isWatched,
                 isFavorite: film.userInfo.isFavorite,
-                watchingDate: film.userInfo.watchingDate
+                watchingDate: !film.userInfo.isWatched ? new Date() : null
               }
             }
         )

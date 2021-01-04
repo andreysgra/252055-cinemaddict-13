@@ -8,11 +8,18 @@ dayjs.extend(relativeTime);
 
 export default class FormatTime {
   static getDuration(runtime) {
-    const length = dayjs.duration(runtime, `m`);
-    const hours = length.hours() ? length.hours() + `h` : ``;
-    const minutes = Utils.addLeadZero(length.minutes()) + `m`;
+    const hours = FormatTime.getDurationHours(runtime);
+    const minutes = FormatTime.getDurationMinutes(runtime);
 
-    return `${hours} ${minutes}`;
+    return `${hours ? hours + `h` : ``} ${Utils.addLeadZero(minutes) + `m`}`;
+  }
+
+  static getDurationHours(runtime) {
+    return Math.floor(dayjs.duration(runtime, `m`).asHours());
+  }
+
+  static getDurationMinutes(runtime) {
+    return dayjs.duration(runtime, `m`).minutes();
   }
 
   static getFullDateMonthAsString(date) {
