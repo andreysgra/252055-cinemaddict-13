@@ -506,8 +506,18 @@ export default class FilmsPresenter {
     filmComponents.set(filmId, newFilmComponent);
   }
 
+  hide() {
+    this._sortingListComponent.getElement().classList.add(`visually-hidden`);
+    this._filmsComponent.getElement().classList.add(`visually-hidden`);
+  }
+
   init() {
     Render.render(this._container, this._filmsComponent);
     this._renderFilmsBoard();
+  }
+
+  show() {
+    this._sortingListComponent.getElement().classList.remove(`visually-hidden`);
+    this._filmsComponent.getElement().classList.remove(`visually-hidden`);
   }
 }

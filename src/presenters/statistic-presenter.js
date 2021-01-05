@@ -98,11 +98,20 @@ export default class StatisticPresenter {
     );
   }
 
+  hide() {
+    this._statisticComponent.getElement().classList.add(`visually-hidden`);
+  }
+
   init() {
     const data = this._getFilmsDataByFilter(this._filmsModel.getFilms(), this._currentFilter);
 
     this._statisticComponent = new StatisticView(data);
     this._statisticComponent.setFilterItemsChangeHandler(this._handleFiltersChange);
     Render.render(this._container, this._statisticComponent);
+    this.hide();
+  }
+
+  show() {
+    this._statisticComponent.getElement().classList.remove(`visually-hidden`);
   }
 }
