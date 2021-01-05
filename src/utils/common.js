@@ -1,22 +1,4 @@
-import {DESCRIPTION_LENGTH} from '../const';
-
-const RankScore = {
-  NOVICE: {
-    MIN: 1,
-    MAX: 10
-  },
-  FAN: {
-    MIN: 11,
-    MAX: 20
-  }
-};
-
-const RankTitle = {
-  NONE: ``,
-  NOVICE: `Novice`,
-  FAN: `Fan`,
-  MOVIE_BUFF: `Movie Buff`
-};
+import {DESCRIPTION_LENGTH, RankScore, RankTitle} from '../const';
 
 export default class {
   static addEscapeEvent(evt, action) {
