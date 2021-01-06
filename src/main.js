@@ -92,3 +92,7 @@ api.getFilms()
     Render.render(siteMainElement, siteMenu, RenderPosition.AFTERBEGIN);
     Render.render(siteFooterElement, new FooterStatisticsView(filmsModel.filmsCount));
   });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
