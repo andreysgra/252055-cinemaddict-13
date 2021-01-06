@@ -7,9 +7,11 @@ import StatisticPresenter from './presenters/statistic-presenter';
 import FilmsModel from './models/films-model';
 import CommentsModel from './models/comments-model';
 import FilterModel from './models/filter-model';
-import Api from "./api/api";
+import Api from './api/api';
+import Store from './api/store.js';
+import Provider from './api/provider.js';
 import {Render} from './utils';
-import {END_POINT, AUTHORIZATION, UpdateType, RenderPosition, RankTitle, FilterType} from './const';
+import {END_POINT, AUTHORIZATION, UpdateType, RenderPosition, RankTitle, FilterType, STORE_NAME} from './const';
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
@@ -18,6 +20,9 @@ const siteFooterElement = document.querySelector(`.footer`);
 let menuActiveItemType = FilterType.ALL;
 
 const api = new Api(END_POINT, AUTHORIZATION);
+
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel();
@@ -37,7 +42,7 @@ const filmsPresenter = new FilmsPresenter(
     {
       userProfileComponent
     },
-    api
+    apiWithProvider
 );
 
 const filterPresenter = new FilterPresenter(siteMenu, filterModel, filmsModel);
@@ -79,7 +84,7 @@ const handleSiteMenuClick = (target) => {
   menuActiveItemType = menuCurrentItemType;
 };
 
-api.getFilms()
+apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
     siteMenu.setClickHandler(handleSiteMenuClick);
@@ -92,3 +97,16 @@ api.getFilms()
     Render.render(siteMainElement, siteMenu, RenderPosition.AFTERBEGIN);
     Render.render(siteFooterElement, new FooterStatisticsView(filmsModel.filmsCount));
   });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

@@ -50,6 +50,10 @@ export default class {
     }
   }
 
+  static isOnline() {
+    return window.navigator.onLine;
+  }
+
   static setCounter(i = 0) {
     return () => i++;
   }
@@ -80,6 +84,25 @@ export default class {
 
   static sortFilmsByRating(filmA, filmB) {
     return filmB.filmInfo.totalRating - filmA.filmInfo.totalRating;
+  }
+
+  static toast(message) {
+    const SHOW_TIME = 5000;
+    const toastContainer = document.createElement(`div`);
+    const toastItem = document.createElement(`div`);
+
+    toastContainer.classList.add(`toast-container`);
+
+    document.body.append(toastContainer);
+
+    toastItem.textContent = message;
+    toastItem.classList.add(`toast-item`);
+
+    toastContainer.append(toastItem);
+
+    setTimeout(() => {
+      toastItem.remove();
+    }, SHOW_TIME);
   }
 
   static toUpperCaseFirstLetter(string) {
