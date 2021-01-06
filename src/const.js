@@ -2,6 +2,10 @@ export const FILMS_COUNT_PER_STEP = 5;
 export const FILMS_EXTRA_COUNT = 2;
 export const DESCRIPTION_LENGTH = 140;
 
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v13`;
+export const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+
 export const AUTHORIZATION = `Basic 5bewZsMc2zbdX`;
 export const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
 

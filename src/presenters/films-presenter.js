@@ -136,6 +136,10 @@ export default class FilmsPresenter {
   }
 
   _handleAddCommentClick(comment) {
+    if (!Utils.isOnline()) {
+      Utils.toast(`You can't add a new comment offline`);
+    }
+
     this._handleViewAction(
         UserAction.ADD_COMMENT,
         UpdateType.PATCH,
@@ -154,6 +158,10 @@ export default class FilmsPresenter {
   }
 
   _handleDeleteCommentClick(filmId, commentId) {
+    if (!Utils.isOnline()) {
+      Utils.toast(`You can't delete comment offline`);
+    }
+
     this._handleViewAction(
         UserAction.DELETE_COMMENT,
         UpdateType.PATCH,
