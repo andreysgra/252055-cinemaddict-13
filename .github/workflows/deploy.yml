@@ -1,13 +1,11 @@
-name: Project check
+name: GitHub Pages deploy
 
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: '*'
 
 jobs:
-  check:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +21,12 @@ jobs:
       run: |
         npm install
 
-    - name: Run checks
+    - name: Build
       run: |
-        npm test
+        npm run build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
