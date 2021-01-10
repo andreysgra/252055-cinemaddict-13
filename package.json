@@ -10,12 +10,12 @@
     "start": "webpack-dev-server --open"
   },
   "devDependencies": {
-    "eslint": "7.13.0",
+    "eslint": "7.17.0",
     "eslint-config-htmlacademy": "0.6.0",
-    "terser-webpack-plugin": "4.2.3",
-    "webpack": "4.44.2",
+    "terser-webpack-plugin": "5.1.1",
+    "webpack": "5.12.2",
     "webpack-cli": "3.3.12",
-    "webpack-dev-server": "3.11.0"
+    "webpack-dev-server": "3.11.1"
   },
   "engines": {
     "node": "12"
@@ -23,7 +23,7 @@
   "dependencies": {
     "chart.js": "2.9.4",
     "chartjs-plugin-datalabels": "0.7.0",
-    "dayjs": "1.9.5",
+    "dayjs": "1.10.3",
     "he": "1.2.0"
   }
 }
