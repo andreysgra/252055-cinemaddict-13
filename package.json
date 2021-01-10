@@ -6,10 +6,11 @@
   "scripts": {
     "eslint": "eslint src/**/*.js",
     "test": "npm run eslint",
-    "build": "webpack --mode production",
+    "build": "cross-env NODE_ENV=production webpack",
     "start": "webpack-dev-server --open"
   },
   "devDependencies": {
+    "cross-env": "7.0.3",
     "eslint": "7.17.0",
     "eslint-config-htmlacademy": "0.6.0",
     "terser-webpack-plugin": "5.1.1",
