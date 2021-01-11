@@ -1,7 +1,7 @@
-import SmartView from "./smart.js";
+import SmartView from './smart';
 import {Utils, FormatTime} from '../utils';
 import {filmControlMap, Emotions, State} from '../const';
-import he from "he";
+import he from 'he';
 
 const addCheckedProperty = (isChecked) => {
   return isChecked ? `checked` : ``;

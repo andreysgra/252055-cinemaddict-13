@@ -8,8 +8,8 @@ import FilmsModel from './models/films-model';
 import CommentsModel from './models/comments-model';
 import FilterModel from './models/filter-model';
 import Api from './api/api';
-import Store from './api/store.js';
-import Provider from './api/provider.js';
+import Store from './api/store';
+import Provider from './api/provider';
 import {Render} from './utils';
 import {END_POINT, AUTHORIZATION, UpdateType, RenderPosition, RankTitle, FilterType, STORE_NAME} from './const';
 
